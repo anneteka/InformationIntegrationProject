@@ -3,3 +3,18 @@
 target
 /target
 *.iml
+
+
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.project
+.factorypath
+.settings/
+.classpath
+
+# Local History for Visual Studio Code
+.history/
