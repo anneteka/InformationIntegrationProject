@@ -27,11 +27,11 @@ public class CsvFirstBook {
     @CsvBindByPosition(position = 7)
     public String description;
     @CsvBindByPosition(position = 8)
-    public String publishedYear;
+    public int publishedYear;
     @CsvBindByPosition(position = 9)
-    public String averageRating;
+    public double averageRating;
     @CsvBindByPosition(position = 10)
-    public String numPages;
+    public int numPages;
     @CsvBindByPosition(position = 11)
-    public String ratingsCount;
+    public int ratingsCount;
 }
