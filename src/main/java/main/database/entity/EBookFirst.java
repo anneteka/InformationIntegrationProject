@@ -46,7 +46,7 @@ public class EBookFirst {
     @Column(name = "published_year")
     private String publishedYear;
     @Column(name = "average_rating")
-    private float averageRating;
+    private Double averageRating;
     @Column(name = "num_pages")
     private Long numPages;
     @Column(name = "rating_count")
@@ -54,7 +54,7 @@ public class EBookFirst {
 
     public EBookFirst(String isbn13, String isbn10, String title, String subtitle, 
                         String authors, String categories, String thumbnail, String description,
-                            String publishedYear, float averageRating, Long numPages, Long ratingCount){
+                            String publishedYear, Double averageRating, Long numPages, Long ratingCount){
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;
         this.title = title;

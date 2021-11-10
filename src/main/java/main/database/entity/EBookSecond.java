@@ -34,7 +34,7 @@ public class EBookSecond {
     @Column(name = "authors")
     private String authors;
     @Column(name = "average_rating")
-    private float averageRating;
+    private Double averageRating;
     @Column(name = "isbn")
     private String isbn;
     @Column(name = "isbn13")
@@ -52,7 +52,7 @@ public class EBookSecond {
     @Column(name = "publisher")
     private String publisher;
 
-    public EBookSecond(Long bookID, String title, String authors, float averageRating, String isbn,
+    public EBookSecond(Long bookID, String title, String authors, Double averageRating, String isbn,
                          String isbn13, String languageCode, Long numPages, Long ratingCount,
                             Long textReviewsCount, String publicationDate, String publisher){
         this.bookID = bookID;
