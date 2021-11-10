@@ -1,18 +1,8 @@
 package main.database.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -21,16 +11,12 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(name= "books3")
+@Table(name = "books3")
 public class EBookThird {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "row_id")
-    private Long row;
-    @Column(name = "row")
-    private Long rowID;
     @Column(name = "book_id")
     private Long bookID;
     @Column(name = "best_book_id")
@@ -81,15 +67,14 @@ public class EBookThird {
     private String tagName;
     @Column(name = "description")
     private String description;
-    
-    public EBookThird(Long row, Long rowID, Long bookID, Long bestBookID, Long workID, Long booksCount,
-                        String isbn, String isbn13, String authors, String originalPublicationYear, String originalTitle,
-                            String title, String languageCode, Double averageRating, Long ratingsCount, Long workRatingsCount,
-                                Long workTextReviewsCount, Long ratings1, Long ratings2, Long ratings3, Long ratings4, Long ratings5,
-                                    String imageUrl, String smallImageUrl, Long goodreadsBookID, String tagName, String description){
 
-        this.row = row;
-        this.rowID = rowID;
+    public EBookThird(
+        Long bookID, Long bestBookID, Long workID, Long booksCount,
+        String isbn, String isbn13, String authors, String originalPublicationYear, String originalTitle,
+        String title, String languageCode, Double averageRating, Long ratingsCount, Long workRatingsCount,
+        Long workTextReviewsCount, Long ratings1, Long ratings2, Long ratings3, Long ratings4, Long ratings5,
+        String imageUrl, String smallImageUrl, Long goodreadsBookID, String tagName, String description) {
+
         this.bookID = bookID;
         this.bestBookID = bestBookID;
         this.workID = workID;
@@ -98,11 +83,11 @@ public class EBookThird {
         this.isbn13 = isbn13;
         this.authors = authors;
         this.originalPublicationYear = originalPublicationYear;
-        this. originalTitle = originalTitle;
+        this.originalTitle = originalTitle;
         this.title = title;
         this.languageCode = languageCode;
-        this. averageRating = averageRating;
-        this. ratingsCount = ratingsCount;
+        this.averageRating = averageRating;
+        this.ratingsCount = ratingsCount;
         this.workRatingsCount = workRatingsCount;
         this.workTextReviewsCount = workTextReviewsCount;
         this.ratings1 = ratings1;
@@ -114,7 +99,7 @@ public class EBookThird {
         this.smallImageUrl = smallImageUrl;
         this.goodreadsBookID = goodreadsBookID;
         this.tagName = tagName;
-        this. description = description;
+        this.description = description;
     }
 
 }
