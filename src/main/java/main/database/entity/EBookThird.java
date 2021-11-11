@@ -12,19 +12,19 @@ import javax.persistence.*;
 @EqualsAndHashCode
 @Entity
 @Table(name = "books3")
-public class EBookThird {
+public class EBookThird extends EBook {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
     @Column(name = "book_id")
-    private Long bookID;
+    private int bookID;
     @Column(name = "best_book_id")
-    private Long bestBookID;
+    private int bestBookID;
     @Column(name = "work_id")
-    private Long workID;
+    private int workID;
     @Column(name = "books_count")
-    private Long booksCount;
+    private int booksCount;
     @Column(name = "isbn")
     private String isbn;
     @Column(name = "isbn13")
@@ -40,40 +40,40 @@ public class EBookThird {
     @Column(name = "language_code")
     private String languageCode;
     @Column(name = "average_rating")
-    private Double averageRating;
+    private double averageRating;
     @Column(name = "ratings_count")
-    private Long ratingsCount;
+    private int ratingsCount;
     @Column(name = "work_rating_count")
-    private Long workRatingsCount;
+    private int workRatingsCount;
     @Column(name = "work_text_reviews_count")
-    private Long workTextReviewsCount;
+    private int workTextReviewsCount;
     @Column(name = "ratings_1")
-    private Long ratings1;
+    private int ratings1;
     @Column(name = "ratings_2")
-    private Long ratings2;
+    private int ratings2;
     @Column(name = "ratings_3")
-    private Long ratings3;
+    private int ratings3;
     @Column(name = "ratings_4")
-    private Long ratings4;
+    private int ratings4;
     @Column(name = "ratings_5")
-    private Long ratings5;
+    private int ratings5;
     @Column(name = "image_url")
     private String imageUrl;
     @Column(name = "small_image_url")
     private String smallImageUrl;
     @Column(name = "goodreads_book_id")
-    private Long goodreadsBookID;
-    @Column(name = "tag_name")
+    private int goodreadsBookID;
+    @Column(name = "tag_names", columnDefinition = "text")
     private String tagName;
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
     public EBookThird(
-        Long bookID, Long bestBookID, Long workID, Long booksCount,
+        int bookID, int bestBookID, int workID, int booksCount,
         String isbn, String isbn13, String authors, String originalPublicationYear, String originalTitle,
-        String title, String languageCode, Double averageRating, Long ratingsCount, Long workRatingsCount,
-        Long workTextReviewsCount, Long ratings1, Long ratings2, Long ratings3, Long ratings4, Long ratings5,
-        String imageUrl, String smallImageUrl, Long goodreadsBookID, String tagName, String description) {
+        String title, String languageCode, Double averageRating, int ratingsCount, int workRatingsCount,
+        int workTextReviewsCount, int ratings1, int ratings2, int ratings3, int ratings4, int ratings5,
+        String imageUrl, String smallImageUrl, int goodreadsBookID, String tagName, String description) {
 
         this.bookID = bookID;
         this.bestBookID = bestBookID;

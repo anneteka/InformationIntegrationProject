@@ -1,7 +1,8 @@
-package main.util.model;
+package main.util.cvs.model;
 
 import com.opencsv.bean.CsvBindByPosition;
 import lombok.*;
+import main.database.entity.EBookFirst;
 
 @Getter
 @Setter
@@ -9,7 +10,7 @@ import lombok.*;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class CsvFirstBook {
+public class CsvFirstBook extends CsvBook {
     @CsvBindByPosition(position = 0)
     public String isbn13;
     @CsvBindByPosition(position = 1)
@@ -34,4 +35,11 @@ public class CsvFirstBook {
     public int numPages;
     @CsvBindByPosition(position = 11)
     public int ratingsCount;
+
+    @Override
+    public EBookFirst toEBook(){
+        return new EBookFirst(isbn13, isbn10, title, subtitle,
+            authors, categories, thumbnail, description,
+            publishedYear, averageRating, numPages, ratingsCount);
+    }
 }

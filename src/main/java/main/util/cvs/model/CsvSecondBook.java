@@ -1,7 +1,8 @@
-package main.util.model;
+package main.util.cvs.model;
 
 import com.opencsv.bean.CsvBindByPosition;
 import lombok.*;
+import main.database.entity.EBookSecond;
 
 @Getter
 @Setter
@@ -9,30 +10,38 @@ import lombok.*;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class CsvSecondBook {
+public class CsvSecondBook extends CsvBook {
     @CsvBindByPosition(position = 0)
-    public String bookID;
+    public int bookID;
     @CsvBindByPosition(position = 1)
     public String title;
     @CsvBindByPosition(position = 2)
     public String authors;
     @CsvBindByPosition(position = 3)
-    public String average_rating;
+    public double averageRating;
     @CsvBindByPosition(position = 4)
     public String isbn;
     @CsvBindByPosition(position = 5)
     public String isbn13;
     @CsvBindByPosition(position = 6)
-    public String language_code;
+    public String languageCode;
     @CsvBindByPosition(position = 7)
-    public String num_pages;
+    public int numPages;
     @CsvBindByPosition(position = 8)
-    public String ratings_count;
+    public int ratingsCount;
     @CsvBindByPosition(position = 9)
-    public String text_reviews_count;
+    public int textReviewsCount;
     @CsvBindByPosition(position = 10)
-    public String publication_date;
+    public String publicationDate;
     @CsvBindByPosition(position = 11)
     public String publisher;
 
+    @Override
+    public EBookSecond toEBook(){
+        return new EBookSecond(
+            bookID, title, authors, averageRating, isbn,
+            isbn13, languageCode, numPages, ratingsCount,
+            textReviewsCount, publicationDate, publisher
+        );
+    }
 }

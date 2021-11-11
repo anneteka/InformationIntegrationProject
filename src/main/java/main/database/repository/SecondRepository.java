@@ -1,16 +1,17 @@
 package main.database.repository;
 
 import main.database.entity.EBookFirst;
+import main.database.entity.EBookSecond;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface FirstRepository extends CrudRepository<EBookFirst, Long> {
+public interface SecondRepository extends CrudRepository<EBookSecond, Long> {
     @Override
-    <S extends EBookFirst> S save(S s);
+    <S extends EBookSecond> S save(S s);
 
     @Override
-    <S extends EBookFirst> Iterable<S> saveAll(Iterable<S> iterable);
+    <S extends EBookSecond> Iterable<S> saveAll(Iterable<S> iterable);
 }

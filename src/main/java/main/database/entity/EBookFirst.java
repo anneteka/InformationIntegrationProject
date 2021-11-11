@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import main.util.cvs.model.CsvFirstBook;
 
 @Getter
 @Setter
@@ -22,7 +23,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @Entity
 @Table(name= "books1")
-public class EBookFirst {
+public class EBookFirst extends EBook {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -41,20 +42,20 @@ public class EBookFirst {
     private String categories;
     @Column(name = "thumbnail")
     private String thumbnail;
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
     @Column(name = "published_year")
-    private String publishedYear;
+    private int publishedYear;
     @Column(name = "average_rating")
-    private Double averageRating;
+    private double averageRating;
     @Column(name = "num_pages")
-    private Long numPages;
+    private int numPages;
     @Column(name = "rating_count")
-    private Long ratingCount;
+    private int ratingCount;
 
     public EBookFirst(String isbn13, String isbn10, String title, String subtitle, 
                         String authors, String categories, String thumbnail, String description,
-                            String publishedYear, Double averageRating, Long numPages, Long ratingCount){
+                            int publishedYear, Double averageRating, int numPages, int ratingCount){
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;
         this.title = title;

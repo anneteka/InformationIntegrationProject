@@ -22,19 +22,19 @@ import lombok.ToString;
 @EqualsAndHashCode
 @Entity
 @Table(name= "books2")
-public class EBookSecond {
+public class EBookSecond extends EBook {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
     @Column(name = "book_id")
-    private Long bookID;
+    private int bookID;
     @Column(name = "title")
     private String title;
     @Column(name = "authors")
     private String authors;
     @Column(name = "average_rating")
-    private Double averageRating;
+    private double averageRating;
     @Column(name = "isbn")
     private String isbn;
     @Column(name = "isbn13")
@@ -42,19 +42,19 @@ public class EBookSecond {
     @Column(name = "language_code")
     private String languageCode;
     @Column(name = "num_pages")
-    private Long numPages;
+    private int numPages;
     @Column(name = "rating_count")
-    private Long ratingCount;
+    private int ratingCount;
     @Column(name = "text_review_count")
-    private Long textReviewsCount;
+    private int textReviewsCount;
     @Column(name = "publication_date")
     private String publicationDate; 
     @Column(name = "publisher")
     private String publisher;
 
-    public EBookSecond(Long bookID, String title, String authors, Double averageRating, String isbn,
-                         String isbn13, String languageCode, Long numPages, Long ratingCount,
-                            Long textReviewsCount, String publicationDate, String publisher){
+    public EBookSecond(int bookID, String title, String authors, double averageRating, String isbn,
+                         String isbn13, String languageCode, int numPages, int ratingCount,
+                            int textReviewsCount, String publicationDate, String publisher){
         this.bookID = bookID;
         this.title = title;
         this.authors = authors;
