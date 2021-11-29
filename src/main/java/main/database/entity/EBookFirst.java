@@ -1,19 +1,8 @@
 package main.database.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import main.util.cvs.model.CsvFirstBook;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -22,51 +11,76 @@ import main.util.cvs.model.CsvFirstBook;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(name= "books1")
+@Table(name = "books1")
 public class EBookFirst extends EBook {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "isbn13")
-    private String isbn13;
-    @Column(name = "isbn10")
-    private String isbn10;
-    @Column(name = "title")
-    private String title;
+    @Column(name = "isbn")
+    private String isbn;
+    @Column(name = "euro_price")
+    private double euro_price;
+    @Column(name = "discount_euro")
+    private double discount_euro;
+    @Column(name = "type")
+    private String type;
+    @Column(name = "link_book_page")
+    private String linkBookPage;
+    @Column(name = "name")
+    private String name;
     @Column(name = "subtitle")
     private String subtitle;
-    @Column(name = "authors")
-    private String authors;
-    @Column(name = "categories")
-    private String categories;
-    @Column(name = "thumbnail")
-    private String thumbnail;
-    @Column(name = "description", columnDefinition = "text")
-    private String description;
-    @Column(name = "published_year")
-    private int publishedYear;
-    @Column(name = "average_rating")
-    private double averageRating;
-    @Column(name = "num_pages")
-    private int numPages;
-    @Column(name = "rating_count")
-    private int ratingCount;
+    @Column(name = "edition")
+    private String edition;
+    @Column(name = "author")
+    private String author;
+    @Column(name = "publisher")
+    private String publisher;
+    @Column(name = "published_country")
+    private String published_country;
+    @Column(name = "language")
+    private String language;
+    @Column(name = "height")
+    private int height;
+    @Column(name = "width")
+    private int width;
+    @Column(name = "spine")
+    private int spine;
+    @Column(name = "weight")
+    private int weight;
+    @Column(name = "short_blurb", columnDefinition = "text")
+    private String shortBlurb;
+    @Column(name = "long_blurb", columnDefinition = "text")
+    private String longBlurb;
+    @Column(name = "review_blurb", columnDefinition = "text")
+    private String blurbReview;
 
-    public EBookFirst(String isbn13, String isbn10, String title, String subtitle, 
-                        String authors, String categories, String thumbnail, String description,
-                            int publishedYear, Double averageRating, int numPages, int ratingCount){
-        this.isbn13 = isbn13;
-        this.isbn10 = isbn10;
-        this.title = title;
+    public EBookFirst(
+        String isbn, double euro_price, double discount_euro, String type,
+        String linkBookPage, String name, String subtitle, String edition,
+        String author, String publisher, String published_country, String language,
+        int height, int width, int spine, int weight, String shortBlurb,
+        String longBlurb, String blurbReview
+    ) {
+        this.isbn = isbn;
+        this.euro_price = euro_price;
+        this.discount_euro = discount_euro;
+        this.type = type;
+        this.linkBookPage = linkBookPage;
+        this.name = name;
         this.subtitle = subtitle;
-        this.authors = authors;
-        this.categories = categories;
-        this.thumbnail = thumbnail;
-        this.description = description;
-        this.publishedYear = publishedYear;
-        this.averageRating = averageRating;
-        this.numPages = numPages;
-        this.ratingCount = ratingCount;
+        this.edition = edition;
+        this.author = author;
+        this.publisher = publisher;
+        this.published_country = published_country;
+        this.language = language;
+        this.height = height;
+        this.width = width;
+        this.spine = spine;
+        this.weight = weight;
+        this.shortBlurb = shortBlurb;
+        this.longBlurb = longBlurb;
+        this.blurbReview = blurbReview;
     }
 }

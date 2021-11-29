@@ -27,46 +27,38 @@ public class EBookSecond extends EBook {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "book_id")
-    private int bookID;
-    @Column(name = "title")
-    private String title;
-    @Column(name = "authors")
-    private String authors;
-    @Column(name = "average_rating")
-    private double averageRating;
     @Column(name = "isbn")
     private String isbn;
     @Column(name = "isbn13")
     private String isbn13;
-    @Column(name = "language_code")
-    private String languageCode;
-    @Column(name = "num_pages")
-    private int numPages;
-    @Column(name = "rating_count")
-    private int ratingCount;
-    @Column(name = "text_review_count")
-    private int textReviewsCount;
-    @Column(name = "publication_date")
-    private String publicationDate; 
-    @Column(name = "publisher")
-    private String publisher;
+    @Column(name = "authors")
+    private String authors;
+    @Column(name = "original_publication_year")
+    private String originalPublicationYear;
+    @Column(name = "original_title")
+    private String originalTitle;
+    @Column(name = "title")
+    private String title;
+    @Column(name = "average_rating")
+    private double averageRating;
+    @Column(name = "image_url")
+    private String imageUrl;
+    @Column(name = "small_image_url")
+    private String smallImageUrl;
 
-    public EBookSecond(int bookID, String title, String authors, double averageRating, String isbn,
-                         String isbn13, String languageCode, int numPages, int ratingCount,
-                            int textReviewsCount, String publicationDate, String publisher){
-        this.bookID = bookID;
-        this.title = title;
-        this.authors = authors;
-        this.averageRating = averageRating;
+    public EBookSecond(
+        String isbn, String isbn13,
+        String authors, String originalPublicationYear,
+        String originalTitle, String title,
+        double averageRating, String imageUrl, String smallImageUrl) {
         this.isbn = isbn;
         this.isbn13 = isbn13;
-        this.languageCode = languageCode;
-        this.numPages = numPages;
-        this.ratingCount = ratingCount;
-        this.textReviewsCount = textReviewsCount;
-        this.publicationDate = publicationDate;
-        this.publisher = publisher;
+        this.authors = authors;
+        this.originalPublicationYear = originalPublicationYear;
+        this.originalTitle = originalTitle;
+        this.title = title;
+        this.averageRating = averageRating;
+        this.imageUrl = imageUrl;
+        this.smallImageUrl = smallImageUrl;
     }
-
 }

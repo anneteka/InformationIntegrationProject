@@ -36,10 +36,4 @@ public class CsvFirstBook extends CsvBook {
     @CsvBindByPosition(position = 11)
     public int ratingsCount;
 
-    @Override
-    public EBookFirst toEBook(){
-        return new EBookFirst(isbn13, isbn10, title, subtitle,
-            authors, categories, thumbnail, description,
-            publishedYear, averageRating, numPages, ratingsCount);
-    }
 }

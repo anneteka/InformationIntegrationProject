@@ -67,14 +67,4 @@ public class CsvThirdBook extends CsvBook {
     @CsvBindByPosition(position = 26)
     public String description;
 
-    @Override
-    public EBookThird toEBook(){
-        return new EBookThird(
-        bookID, bestBookID, workID, booksCount,
-        isbn, isbn13, authors, originalPublicationYear, originalTitle,
-        title, languageCode, averageRating, ratingsCount, workRatingsCount,
-        workTextReviewsCount, ratings1, ratings2, ratings3, ratings4, ratings5,
-        imageUrl, smallImageUrl, goodreadsBookID, tagName, description
-        );
-    }
 }

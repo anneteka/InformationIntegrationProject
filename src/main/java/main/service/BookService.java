@@ -37,21 +37,21 @@ public class BookService {
         List<CsvSecondBook> parsedSecond = secondSourceParcer.parse(path2, CsvSecondBook.class);
         List<CsvThirdBook> parsedThird = thirdSourceParcer.parse(path3, CsvThirdBook.class);
 
-        firstRepo.saveAll(
-            parsedFirst.stream().
-                map(CsvFirstBook::toEBook)
-                .collect(Collectors.toList())
-        );
-        secondRepo.saveAll(
-            parsedSecond.stream().
-                map(CsvSecondBook::toEBook)
-                .collect(Collectors.toList())
-        );
-        thirdRepo.saveAll(
-            parsedThird.stream().
-                map(CsvThirdBook::toEBook)
-                .collect(Collectors.toList())
-        );
+//        firstRepo.saveAll(
+//            parsedFirst.stream().
+//                map(CsvFirstBook::toEBook)
+//                .collect(Collectors.toList())
+//        );
+//        secondRepo.saveAll(
+//            parsedSecond.stream().
+//                map(CsvSecondBook::toEBook)
+//                .collect(Collectors.toList())
+//        );
+//        thirdRepo.saveAll(
+//            parsedThird.stream().
+//                map(CsvThirdBook::toEBook)
+//                .collect(Collectors.toList())
+//        );
     }
 
     public void setUpFromSources() throws FileNotFoundException {
