@@ -2,6 +2,7 @@ package main.util.cvs.model;
 
 import com.opencsv.bean.CsvBindByPosition;
 import lombok.*;
+import main.database.entity.EBook;
 import main.database.entity.EBookSecond;
 
 @Getter
@@ -11,29 +12,31 @@ import main.database.entity.EBookSecond;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CsvSecondBook extends CsvBook {
-    @CsvBindByPosition(position = 0)
-    public int bookID;
-    @CsvBindByPosition(position = 1)
-    public String title;
-    @CsvBindByPosition(position = 2)
-    public String authors;
-    @CsvBindByPosition(position = 3)
-    public double averageRating;
-    @CsvBindByPosition(position = 4)
-    public String isbn;
     @CsvBindByPosition(position = 5)
-    public String isbn13;
+    private String isbn;
     @CsvBindByPosition(position = 6)
-    public String languageCode;
+    private String isbn13;
     @CsvBindByPosition(position = 7)
-    public int numPages;
+    private String authors;
     @CsvBindByPosition(position = 8)
-    public int ratingsCount;
+    private String originalPublicationYear;
     @CsvBindByPosition(position = 9)
-    public int textReviewsCount;
+    private String originalTitle;
     @CsvBindByPosition(position = 10)
-    public String publicationDate;
-    @CsvBindByPosition(position = 11)
-    public String publisher;
+    private String title;
+    @CsvBindByPosition(position = 12)
+    private double averageRating;
+    @CsvBindByPosition(position = 21)
+    private String imageUrl;
+    @CsvBindByPosition(position = 22)
+    private String smallImageUrl;
 
+    @Override
+    public EBookSecond toEBook() {
+        return new EBookSecond(
+            isbn, isbn13,
+            authors, originalPublicationYear,
+            originalTitle, title,
+            averageRating, imageUrl, smallImageUrl);
+    }
 }

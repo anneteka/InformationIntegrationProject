@@ -42,13 +42,13 @@ public class EBookFirst extends EBook {
     @Column(name = "language")
     private String language;
     @Column(name = "height")
-    private int height;
+    private double height;
     @Column(name = "width")
-    private int width;
+    private double width;
     @Column(name = "spine")
-    private int spine;
+    private double spine;
     @Column(name = "weight")
-    private int weight;
+    private double weight;
     @Column(name = "short_blurb", columnDefinition = "text")
     private String shortBlurb;
     @Column(name = "long_blurb", columnDefinition = "text")
@@ -60,7 +60,7 @@ public class EBookFirst extends EBook {
         String isbn, double euro_price, double discount_euro, String type,
         String linkBookPage, String name, String subtitle, String edition,
         String author, String publisher, String published_country, String language,
-        int height, int width, int spine, int weight, String shortBlurb,
+        double height, double width, double spine, double weight, String shortBlurb,
         String longBlurb, String blurbReview
     ) {
         this.isbn = isbn;

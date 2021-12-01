@@ -3,6 +3,7 @@ package main.util.cvs.model;
 
 import com.opencsv.bean.CsvBindByPosition;
 import lombok.*;
+import main.database.entity.EBook;
 import main.database.entity.EBookThird;
 
 @Getter
@@ -12,59 +13,41 @@ import main.database.entity.EBookThird;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CsvThirdBook extends CsvBook {
-    @CsvBindByPosition(position = 0)
-    public int row;
-    @CsvBindByPosition(position = 1)
-    public int id;
     @CsvBindByPosition(position = 2)
-    public int bookID;
+    private String title;
     @CsvBindByPosition(position = 3)
-    public int bestBookID;
+    private String author;
     @CsvBindByPosition(position = 4)
-    public int workID;
+    private String series;
     @CsvBindByPosition(position = 5)
-    public int booksCount;
+    private String description;
     @CsvBindByPosition(position = 6)
-    public String isbn;
+    private String genres;
     @CsvBindByPosition(position = 7)
-    public String isbn13;
+    private String awards;
     @CsvBindByPosition(position = 8)
-    public String authors;
+    private String characters;
     @CsvBindByPosition(position = 9)
-    public String originalPublicationYear;
+    private String places;
     @CsvBindByPosition(position = 10)
-    public String originalTitle;
+    private String isbn;
     @CsvBindByPosition(position = 11)
-    public String title;
+    private String isbn13;
     @CsvBindByPosition(position = 12)
-    public String languageCode;
+    private String language;
     @CsvBindByPosition(position = 13)
-    public double averageRating;
-    @CsvBindByPosition(position = 14)
-    public int ratingsCount;
-    @CsvBindByPosition(position = 15)
-    public int workRatingsCount;
-    @CsvBindByPosition(position = 16)
-    public int workTextReviewsCount;
-    @CsvBindByPosition(position = 17)
-    public int ratings1;
+    private String firstPublishDate;
     @CsvBindByPosition(position = 18)
-    public int ratings2;
-    @CsvBindByPosition(position = 19)
-    public int ratings3;
-    @CsvBindByPosition(position = 20)
-    public int ratings4;
-    @CsvBindByPosition(position = 21)
-    public int ratings5;
-    @CsvBindByPosition(position = 22)
-    public String imageUrl;
-    @CsvBindByPosition(position = 23)
-    public String smallImageUrl;
-    @CsvBindByPosition(position = 24)
-    public int goodreadsBookID;
-    @CsvBindByPosition(position = 25)
-    public String tagName;
-    @CsvBindByPosition(position = 26)
-    public String description;
+    private double avgRating;
 
+
+    @Override
+    public EBookThird toEBook() {
+        return new EBookThird(
+            title, author, series,
+            description, genres, awards,
+            characters, places, isbn,  isbn13,
+            language, firstPublishDate, avgRating
+    );
+    }
 }
