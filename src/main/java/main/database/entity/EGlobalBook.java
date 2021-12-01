@@ -22,8 +22,8 @@ import main.util.cvs.model.CsvFirstBook;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(name= "books1")
-public class EGlobalBool extends EBook {
+@Table(name= "global_book")
+public class EGlobalBook extends EBook {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -90,9 +90,47 @@ public class EGlobalBool extends EBook {
     private String characters;
     @Column(name = "places")
     private String places;
-   
-    
-    
 
-
+    public EGlobalBook(
+        String isbn13, String isbn10, int publication_date, double euroPrice,
+        double euroDiscount, String type, String linkBookPage, String title,
+        String subtitle, String originalTitle, String edition, String authors,
+        String publisher, String publishedCountry, String language, int numPages,
+        double height, double widht, double spine, double weight,
+        String short_description, String long_description, String review,
+        double averageRating, String imageUrl, String smallImageUrl, String series,
+        String genres, String awards, String characters, String places
+    ) {
+        this.isbn13 = isbn13;
+        this.isbn10 = isbn10;
+        this.publication_date = publication_date;
+        this.euroPrice = euroPrice;
+        this.euroDiscount = euroDiscount;
+        this.type = type;
+        this.linkBookPage = linkBookPage;
+        this.title = title;
+        this.subtitle = subtitle;
+        this.originalTitle = originalTitle;
+        this.edition = edition;
+        this.authors = authors;
+        this.publisher = publisher;
+        this.publishedCountry = publishedCountry;
+        this.language = language;
+        this.numPages = numPages;
+        this.height = height;
+        this.widht = widht;
+        this.spine = spine;
+        this.weight = weight;
+        this.short_description = short_description;
+        this.long_description = long_description;
+        this.review = review;
+        this.averageRating = averageRating;
+        this.imageUrl = imageUrl;
+        this.smallImageUrl = smallImageUrl;
+        this.series = series;
+        this.genres = genres;
+        this.awards = awards;
+        this.characters = characters;
+        this.places = places;
+    }
 }
