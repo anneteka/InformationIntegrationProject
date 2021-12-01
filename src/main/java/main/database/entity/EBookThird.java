@@ -25,11 +25,11 @@ public class EBookThird extends EBook {
     private String series;
     @Column(name = "description", columnDefinition = "text")
     private String description;
-    @Column(name = "genres")
+    @Column(name = "genres", columnDefinition = "text")
     private String genres;
-    @Column(name = "awards")
+    @Column(name = "awards", columnDefinition = "text")
     private String awards;
-    @Column(name = "characters")
+    @Column(name = "characters", columnDefinition = "text")
     private String characters;
     @Column(name = "places")
     private String places;
