@@ -2,8 +2,7 @@ package main.util.cvs.model;
 
 import com.opencsv.bean.CsvBindByPosition;
 import lombok.*;
-import main.database.entity.EBook;
-import main.database.entity.EBookSecond;
+import main.database.entity.source.EBookSecond;
 
 @Getter
 @Setter

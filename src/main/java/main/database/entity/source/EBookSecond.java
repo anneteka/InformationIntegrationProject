@@ -1,4 +1,4 @@
-package main.database.entity;
+package main.database.entity.source;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import main.database.entity.EBook;
 
 @Getter
 @Setter

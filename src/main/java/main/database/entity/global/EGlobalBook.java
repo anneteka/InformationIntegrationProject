@@ -1,11 +1,6 @@
-package main.database.entity;
+package main.database.entity.global;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -13,6 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import main.database.entity.EBook;
+
+import java.util.Collections;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -49,8 +48,6 @@ public class EGlobalBook extends EBook {
     private String originalTitle;
     @Column(name = "edition")
     private String edition;
-    @Column(name = "authors")
-    private String authors;
     @Column(name = "publisher")
     private String publisher;
     @Column(name = "published_country")
@@ -62,7 +59,7 @@ public class EGlobalBook extends EBook {
     @Column(name = "height")
     private double height;
     @Column(name = "width")
-    private double widht;
+    private double width;
     @Column(name = "spine")
     private double spine;
     @Column(name = "weight")
@@ -81,24 +78,28 @@ public class EGlobalBook extends EBook {
     private String smallImageUrl;
     @Column(name = "series")
     private String series;
-    @Column(name = "genres")
-    private String genres;
-    @Column(name = "awards")
-    private String awards;
-    @Column(name = "characters")
-    private String characters;
     @Column(name = "places")
     private String places;
+    @Column(name = "awards", columnDefinition = "text")
+    private String awards;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<EGlobalCharacter> characters;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<EGlobalGenre> genres;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<EGlobalAuthor> authors;
+
 
     public EGlobalBook(
         String isbn13, String isbn10, int publication_date, double euroPrice,
         double euroDiscount, String type, String linkBookPage, String title,
-        String subtitle, String originalTitle, String edition, String authors,
+        String subtitle, String originalTitle, String edition,
         String publisher, String publishedCountry, String language, int numPages,
-        double height, double widht, double spine, double weight,
+        double height, double width, double spine, double weight,
         String short_description, String long_description, String review,
         double averageRating, String imageUrl, String smallImageUrl, String series,
-        String genres, String awards, String characters, String places
+        String places, String awards, Set<EGlobalCharacter> characters, Set<EGlobalGenre> genres, Set<EGlobalAuthor> authors
     ) {
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;
@@ -117,7 +118,7 @@ public class EGlobalBook extends EBook {
         this.language = language;
         this.numPages = numPages;
         this.height = height;
-        this.widht = widht;
+        this.width = width;
         this.spine = spine;
         this.weight = weight;
         this.short_description = short_description;
@@ -131,5 +132,44 @@ public class EGlobalBook extends EBook {
         this.awards = awards;
         this.characters = characters;
         this.places = places;
+    }
+
+    public EGlobalBook(String isbn13, String isbn10, int publication_date, double euroPrice,
+                       double euroDiscount, String type, String linkBookPage, String title, String subtitle,
+                       String originalTitle, String edition, String publisher, String publishedCountry,
+                       String language, int numPages, double height, double width, double spine, double weight, String short_description, String long_description,
+                       String review, double averageRating, String imageUrl, String smallImageUrl, String series, String places, String awards) {
+        this.isbn13 = isbn13;
+        this.isbn10 = isbn10;
+        this.publication_date = publication_date;
+        this.euroPrice = euroPrice;
+        this.euroDiscount = euroDiscount;
+        this.type = type;
+        this.linkBookPage = linkBookPage;
+        this.title = title;
+        this.subtitle = subtitle;
+        this.originalTitle = originalTitle;
+        this.edition = edition;
+        this.publisher = publisher;
+        this.publishedCountry = publishedCountry;
+        this.language = language;
+        this.numPages = numPages;
+        this.height = height;
+        this.width = width;
+        this.spine = spine;
+        this.weight = weight;
+        this.short_description = short_description;
+        this.long_description = long_description;
+        this.review = review;
+        this.averageRating = averageRating;
+        this.imageUrl = imageUrl;
+        this.smallImageUrl = smallImageUrl;
+        this.series = series;
+        this.places = places;
+        this.awards = awards;
+
+        this.characters = Collections.emptySet();
+        this.authors = Collections.emptySet();
+        this.genres = Collections.emptySet();
     }
 }

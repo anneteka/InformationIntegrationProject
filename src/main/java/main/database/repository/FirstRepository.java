@@ -1,10 +1,8 @@
 package main.database.repository;
 
-import main.database.entity.EBookFirst;
+import main.database.entity.source.EBookFirst;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface FirstRepository extends CrudRepository<EBookFirst, Long> {
