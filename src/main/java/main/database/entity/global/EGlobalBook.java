@@ -173,40 +173,4 @@ public class EGlobalBook extends EBook {
         this.authors = Collections.emptySet();
         this.genres = Collections.emptySet();
     }
-
-    // for the first source
-    public EGlobalBook(EBookFirst book) {
-        this.isbn13 = book.getIsbn();
-        this.isbn10 = null;
-        this.publication_date = 0;
-        this.euroPrice = book.getEuro_price();
-        this.euroDiscount = book.getDiscount_euro();
-        this.type = book.getType();
-        this.linkBookPage = book.getLinkBookPage();
-        this.title = book.getName();
-        this.subtitle = book.getSubtitle();
-        this.originalTitle = null;
-        this.edition = book.getEdition();
-        this.publisher = book.getPublisher();
-        this.publishedCountry = book.getPublished_country();
-        this.language = book.getLanguage();
-        this.numPages = 0;
-        this.height = book.getHeight();
-        this.width = book.getWidth();
-        this.spine = book.getSpine();
-        this.weight = book.getWeight();
-        this.short_description = book.getShortBlurb();
-        this.long_description = book.getLongBlurb();
-        this.review = book.getBlurbReview();
-        this.averageRating = 0;
-        this.imageUrl = null;
-        this.smallImageUrl = null;
-        this.series = null;
-        this.places = null;
-        this.awards = null;
-
-        this.characters = Collections.emptySet();
-        this.authors = Collections.emptySet();
-        this.genres = Collections.emptySet();
-    }
 }
