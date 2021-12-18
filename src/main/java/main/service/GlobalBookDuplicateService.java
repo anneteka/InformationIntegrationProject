@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BookService {
+public class GlobalBookDuplicateService {
     private FirstRepository firstRepo;
     private SecondRepository secondRepo;
     private ThirdRepository thirdRepo;
 
     @Autowired
-    public BookService(FirstRepository firstRepo, SecondRepository secondRepo, ThirdRepository thirdRepo) {
+    public GlobalBookDuplicateService(FirstRepository firstRepo, SecondRepository secondRepo, ThirdRepository thirdRepo) {
         this.firstRepo = firstRepo;
         this.secondRepo = secondRepo;
         this.thirdRepo = thirdRepo;

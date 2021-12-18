@@ -1,5 +1,9 @@
 package main.service;
 
+import main.database.entity.global.EGlobalAuthor;
+import main.database.entity.global.EGlobalBook;
+import main.database.entity.global.EGlobalCharacter;
+import main.database.entity.global.EGlobalGenre;
 import main.database.repository.FirstRepository;
 import main.database.repository.SecondRepository;
 import main.database.repository.ThirdRepository;
@@ -26,6 +30,26 @@ public class BookService {
         this.firstRepo = firstRepo;
         this.secondRepo = secondRepo;
         this.thirdRepo = thirdRepo;
+    }
+
+
+    public void addAuthor(EGlobalBook book, EGlobalAuthor author){
+
+    }
+    public void addAuthor(EGlobalBook book, String author){
+
+    }
+    public void addCharacter(EGlobalBook book, EGlobalCharacter character){
+
+    }
+    public void addCharacter(EGlobalBook book, String character){
+
+    }
+    public void addGenre(EGlobalBook book, EGlobalGenre genre){
+
+    }
+    public void addGenre(EGlobalBook book, String genre){
+
     }
 
     public void setUp(String path1, String path2, String path3) throws FileNotFoundException {

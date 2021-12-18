@@ -1,6 +1,6 @@
 package main;
 
-import main.service.BookService;
+import main.service.GlobalBookDuplicateService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -16,7 +16,7 @@ public class Application {
         // use one of the two methods to fill in data to the databases when the app starts running
         // you only need to run it once and only need one of them
         //context.getBean(BookService.class).setUpFromSources();
-        context.getBean(BookService.class).setUpTestSources();
+        context.getBean(GlobalBookDuplicateService.class).setUpTestSources();
     }
 
 }
