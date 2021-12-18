@@ -20,6 +20,7 @@ public class GGenreService {
         Optional<EGlobalGenre> existing = repository.findByName(genre);
         return existing.orElseGet(() -> repository.save(new EGlobalGenre(genre)));
     }
+
     public EGlobalGenre findGenreByName(String genreName){
         return repository.findByName(genreName).orElse(null);
     }
