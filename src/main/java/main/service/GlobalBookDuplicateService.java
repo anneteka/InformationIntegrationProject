@@ -21,18 +21,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class GlobalBookDuplicateService {
+<<<<<<< HEAD
     private EGlobalAuthor authorRepo;
     private EGlobalBook bookRepo;
     private EGlobalCharacter characterRepo;
     private EGlobalGenre genreRepo;
+=======
+>>>>>>> 57094ff86a1003943dee9e62a3cb5bf2ed0fb677
     private FirstRepository firstRepo;
     private SecondRepository secondRepo;
     private ThirdRepository thirdRepo;
 
     @Autowired
+<<<<<<< HEAD
     public GlobalBookDuplicateService(FirstRepository firstRepo, SecondRepository secondRepo, ThirdRepository thirdRepo,
                                         EGlobalAuthor authorRepo, EGlobalBook bookRepo, EGlobalCharacter characterRepo, 
                                             EGlobalGenre genreRepo) {
+=======
+    public GlobalBookDuplicateService(FirstRepository firstRepo, SecondRepository secondRepo, ThirdRepository thirdRepo) {
+>>>>>>> 57094ff86a1003943dee9e62a3cb5bf2ed0fb677
         this.firstRepo = firstRepo;
         this.secondRepo = secondRepo;
         this.thirdRepo = thirdRepo;
