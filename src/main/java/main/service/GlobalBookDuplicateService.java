@@ -1,5 +1,9 @@
 package main.service;
 
+import main.database.entity.global.EGlobalAuthor;
+import main.database.entity.global.EGlobalBook;
+import main.database.entity.global.EGlobalCharacter;
+import main.database.entity.global.EGlobalGenre;
 import main.database.repository.FirstRepository;
 import main.database.repository.SecondRepository;
 import main.database.repository.ThirdRepository;
@@ -16,59 +20,29 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BookService {
+public class GlobalBookDuplicateService {
+    private EGlobalAuthor authorRepo;
+    private EGlobalBook bookRepo;
+    private EGlobalCharacter characterRepo;
+    private EGlobalGenre genreRepo;
     private FirstRepository firstRepo;
     private SecondRepository secondRepo;
     private ThirdRepository thirdRepo;
 
     @Autowired
-    public BookService(FirstRepository firstRepo, SecondRepository secondRepo, ThirdRepository thirdRepo) {
+    public GlobalBookDuplicateService(FirstRepository firstRepo, SecondRepository secondRepo, ThirdRepository thirdRepo,
+                                        EGlobalAuthor authorRepo, EGlobalBook bookRepo, EGlobalCharacter characterRepo, 
+                                            EGlobalGenre genreRepo) {
         this.firstRepo = firstRepo;
         this.secondRepo = secondRepo;
         this.thirdRepo = thirdRepo;
+        this.authorRepo = authorRepo;
+        this.bookRepo = bookRepo;
+        this.characterRepo = characterRepo;
+        this.genreRepo = genreRepo;
     }
 
-    public void setUp(String path1, String path2, String path3) throws FileNotFoundException {
-        CsvParserUtil<BlackwellBook> firstSourceParcer = new CsvParserUtil<BlackwellBook>();
-        CsvParserUtil<CsvSecondBook> secondSourceParcer = new CsvParserUtil<CsvSecondBook>();
-        CsvParserUtil<CsvThirdBook> thirdSourceParcer = new CsvParserUtil<CsvThirdBook>();
-
-        List<BlackwellBook> parsedFirst = firstSourceParcer.parse(path1, BlackwellBook.class);
-        List<CsvSecondBook> parsedSecond = secondSourceParcer.parse(path2, CsvSecondBook.class);
-        List<CsvThirdBook> parsedThird = thirdSourceParcer.parse(path3, CsvThirdBook.class);
-
-        firstRepo.saveAll(
-            parsedFirst.stream().
-                map(BlackwellBook::toEBook)
-                .collect(Collectors.toList())
-        );
-        secondRepo.saveAll(
-            parsedSecond.stream().
-                map(CsvSecondBook::toEBook)
-                .collect(Collectors.toList())
-        );
-        thirdRepo.saveAll(
-            parsedThird.stream().
-                map(CsvThirdBook::toEBook)
-                .collect(Collectors.toList())
-        );
-    }
-
-    public void setUpFromSources() throws FileNotFoundException {
-        String firstSource = Paths.get("src", "main", "resources", "data", "books1.csv").toString();
-        String secondSource = Paths.get("src", "main", "resources", "data", "test2.csv").toString();
-        String thirdSource = Paths.get("src", "main", "resources", "data", "books3.csv").toString();
-        setUp(firstSource, secondSource, thirdSource);
-    }
-
-    public void setUpTestSources() throws FileNotFoundException {
-        String firstSource = Paths.get("src", "test", "data", "test1.csv").toString();
-        String secondSource = Paths.get("src", "test", "data", "test2.csv").toString();
-        String thirdSource = Paths.get("src", "test", "data", "test.csv").toString();
-        setUp(firstSource, secondSource, thirdSource);
-    }
-
-    public void dropDatabase() {
+    public void setUpGlobalSchema(){
 
     }
 
