@@ -3,8 +3,6 @@ package main.database.entity.global;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -20,10 +18,10 @@ public class EGlobalCharacter {
     @Column(name = "id")
     private Long id;
     @Column(name = "character_name")
-    private String characterName;
+    private String name;
 
-    public EGlobalCharacter(String characterName) {
-        this.characterName = characterName;
+    public EGlobalCharacter(String name) {
+        this.name = name;
     }
 
 }

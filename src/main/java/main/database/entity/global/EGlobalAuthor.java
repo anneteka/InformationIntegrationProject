@@ -1,11 +1,8 @@
 package main.database.entity.global;
 
 import lombok.*;
-import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -21,10 +18,10 @@ public class EGlobalAuthor {
     @Column(name = "id")
     private Long id;
     @Column(name = "author_name")
-    private String authorName;
+    private String name;
 
-    public EGlobalAuthor(String authorName) {
-        this.authorName = authorName;
+    public EGlobalAuthor(String name) {
+        this.name = name;
     }
 
 }
