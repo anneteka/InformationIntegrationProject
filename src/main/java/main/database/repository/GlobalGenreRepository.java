@@ -12,4 +12,6 @@ public interface GlobalGenreRepository extends CrudRepository<EGlobalGenre, Long
 
     @Override
     <S extends EGlobalGenre> Iterable<S> saveAll(Iterable<S> iterable);
+
+    EGlobalGenre findByName(String genreName);
 }

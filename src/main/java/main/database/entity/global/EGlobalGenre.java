@@ -3,8 +3,6 @@ package main.database.entity.global;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -20,10 +18,10 @@ public class EGlobalGenre {
     @Column(name = "id")
     private Long id;
     @Column(name = "genre")
-    private String genre;
+    private String name;
 
     public EGlobalGenre(String genre) {
-        this.genre = genre;
+        this.name = genre;
     }
 
 }
