@@ -28,7 +28,7 @@ import java.util.stream.StreamSupport;
 
 import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
-import java.util.Set;
+import java.util.HashSet;
 
 @Service
 public class GlobalBookDuplicateService {
@@ -66,7 +66,7 @@ public class GlobalBookDuplicateService {
     }
 
     public EGlobalBook firstBookToEGlobalBook(EBookFirst firstBook){
-        Set<EGlobalAuthor> authorSet = Collections.emptySet();
+        HashSet<EGlobalAuthor> authorSet = Collections.emptySet();
     
         String authorList = firstBook.getAuthor();
 

@@ -12,7 +12,7 @@ import main.database.entity.EBook;
 import main.database.entity.source.EBookFirst;
 
 import java.util.Collections;
-import java.util.Set;
+    import java.util.HashSet;
 
 @Getter
 @Setter
@@ -85,11 +85,11 @@ public class EGlobalBook extends EBook {
     private String awards;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    private Set<EGlobalCharacter> characters;
+    private HashSet<EGlobalCharacter> characters;
     @ManyToMany(fetch = FetchType.LAZY)
-    private Set<EGlobalGenre> genres;
+    private HashSet<EGlobalGenre> genres;
     @ManyToMany(fetch = FetchType.LAZY)
-    private Set<EGlobalAuthor> authors;
+    private HashSet<EGlobalAuthor> authors;
 
 
     public EGlobalBook(
@@ -100,7 +100,7 @@ public class EGlobalBook extends EBook {
         double height, double width, double spine, double weight,
         String short_description, String long_description, String review,
         double averageRating, String imageUrl, String smallImageUrl, String series,
-        String places, String awards, Set<EGlobalCharacter> characters, Set<EGlobalGenre> genres, Set<EGlobalAuthor> authors
+        String places, String awards, HashSet<EGlobalCharacter> characters, HashSet<EGlobalGenre> genres, HashSet<EGlobalAuthor> authors
     ) {
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;
