@@ -18,6 +18,7 @@ public class Application {
         // you only need to run it once and only need one of them
         //context.getBean(BookService.class).setUpFromSources();
         context.getBean(SetUpService.class).setUpTestSources();
+        context.getBean(GlobalBookDuplicateService.class).setUpGlobalSchema();
     }
 
 }
