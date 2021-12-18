@@ -11,4 +11,6 @@ public interface GlobalBookRepository extends CrudRepository<EGlobalBook, Long> 
 
     @Override
     <S extends EGlobalBook> Iterable<S> saveAll(Iterable<S> iterable);
+
+    
 }
