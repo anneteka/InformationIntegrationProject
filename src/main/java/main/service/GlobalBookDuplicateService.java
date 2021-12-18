@@ -66,7 +66,7 @@ public class GlobalBookDuplicateService {
     }
 
     public EGlobalBook firstBookToEGlobalBook(EBookFirst firstBook){
-        HashSet<EGlobalAuthor> authorSet = Collections.emptySet();
+        HashSet<EGlobalAuthor> authorSet = new HashSet<>();
     
         String authorList = firstBook.getAuthor();
 
@@ -90,7 +90,7 @@ public class GlobalBookDuplicateService {
                                             firstBook.getWidth(), firstBook.getSpine(), firstBook.getWeight(), firstBook.getShortBlurb(),
                                             firstBook.getLongBlurb(),
                                             firstBook.getBlurbReview(), -1, null, null, null, null, null,
-                                            Collections.emptySet(), Collections.emptySet(), authorSet); 
+                                            new HashSet<>(), new HashSet<>(), authorSet);
     }
 
 }
