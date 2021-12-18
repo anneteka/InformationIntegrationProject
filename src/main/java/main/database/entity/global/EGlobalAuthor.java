@@ -20,6 +20,7 @@ public class EGlobalAuthor {
     @Column(name = "author_name")
     private String name;
 
+
     public EGlobalAuthor(String name) {
         this.name = name;
     }
