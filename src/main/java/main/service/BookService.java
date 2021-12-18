@@ -32,26 +32,6 @@ public class BookService {
         this.thirdRepo = thirdRepo;
     }
 
-
-    public void addAuthor(EGlobalBook book, EGlobalAuthor author){
-
-    }
-    public void addAuthor(EGlobalBook book, String author){
-
-    }
-    public void addCharacter(EGlobalBook book, EGlobalCharacter character){
-
-    }
-    public void addCharacter(EGlobalBook book, String character){
-
-    }
-    public void addGenre(EGlobalBook book, EGlobalGenre genre){
-
-    }
-    public void addGenre(EGlobalBook book, String genre){
-
-    }
-
     public void setUp(String path1, String path2, String path3) throws FileNotFoundException {
         CsvParserUtil<BlackwellBook> firstSourceParcer = new CsvParserUtil<BlackwellBook>();
         CsvParserUtil<CsvSecondBook> secondSourceParcer = new CsvParserUtil<CsvSecondBook>();
