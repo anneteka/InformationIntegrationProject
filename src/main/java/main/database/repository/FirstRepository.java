@@ -11,4 +11,6 @@ public interface FirstRepository extends CrudRepository<EBookFirst, Long> {
 
     @Override
     <S extends EBookFirst> Iterable<S> saveAll(Iterable<S> iterable);
+
+    EBookFirst findByIsbn13(String isbn);
 }
