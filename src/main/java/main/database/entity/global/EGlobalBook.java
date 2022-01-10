@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import main.database.entity.EBook;
-import main.database.entity.source.EBookFirst;
 
-import java.util.Collections;
-    import java.util.HashSet;
+import java.util.ArrayList;
 
 @Getter
 @Setter
@@ -85,11 +83,11 @@ public class EGlobalBook extends EBook {
     private String awards;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    private HashSet<EGlobalCharacter> characters;
+    private ArrayList<EGlobalCharacter> characters;
     @ManyToMany(fetch = FetchType.LAZY)
-    private HashSet<EGlobalGenre> genres;
+    private ArrayList<EGlobalGenre> genres;
     @ManyToMany(fetch = FetchType.LAZY)
-    private HashSet<EGlobalAuthor> authors;
+    private ArrayList<EGlobalAuthor> authors;
 
 
     public EGlobalBook(
@@ -100,7 +98,7 @@ public class EGlobalBook extends EBook {
         double height, double width, double spine, double weight,
         String short_description, String long_description, String review,
         double averageRating, String imageUrl, String smallImageUrl, String series,
-        String places, String awards, HashSet<EGlobalCharacter> characters, HashSet<EGlobalGenre> genres, HashSet<EGlobalAuthor> authors
+        String places, String awards, ArrayList<EGlobalCharacter> characters, ArrayList<EGlobalGenre> genres, ArrayList<EGlobalAuthor> authors
     ) {
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;
@@ -169,8 +167,8 @@ public class EGlobalBook extends EBook {
         this.places = places;
         this.awards = awards;
 
-        this.characters = Collections.emptySet();
-        this.authors = Collections.emptySet();
-        this.genres = Collections.emptySet();
+        this.characters = new ArrayList<EGlobalCharacter>();
+        this.authors = new ArrayList<EGlobalAuthor>();
+        this.genres = new ArrayList<EGlobalGenre>();
     }
 }

@@ -28,7 +28,8 @@ import java.util.stream.StreamSupport;
 
 import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+
 
 @Service
 public class GlobalBookDuplicateService {
@@ -66,7 +67,7 @@ public class GlobalBookDuplicateService {
     }
 
     public EGlobalBook firstBookToEGlobalBook(EBookFirst firstBook){
-        HashSet<EGlobalAuthor> authorSet = new HashSet<>();
+        ArrayList<EGlobalAuthor> authorSet = new ArrayList<EGlobalAuthor>();
     
         String authorList = firstBook.getAuthor();
 
@@ -90,7 +91,7 @@ public class GlobalBookDuplicateService {
                                             firstBook.getWidth(), firstBook.getSpine(), firstBook.getWeight(), firstBook.getShortBlurb(),
                                             firstBook.getLongBlurb(),
                                             firstBook.getBlurbReview(), -1, null, null, null, null, null,
-                                            new HashSet<>(), new HashSet<>(), authorSet);
+                                            new ArrayList<>(), new ArrayList<>(), authorSet);
     }
 
 }
