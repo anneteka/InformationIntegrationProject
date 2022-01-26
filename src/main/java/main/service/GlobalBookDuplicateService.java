@@ -94,22 +94,27 @@ public class GlobalBookDuplicateService {
         for (String author : authors){
             if (author.contains("(") && author.contains(")")){
                 int indexOpen = author.indexOf("(");
-                int indexClose = author.indexOf(")");
-                author = author.substring(0, indexOpen) + author.substring(indexClose+1, authorList.length());
+                try {
+                    author = author.substring(0, indexOpen);
+                }
+                catch (StringIndexOutOfBoundsException e){
+                    System.out.println(author + " "+author.length()+" "+indexOpen );
+                    //TODO check for strings like bc exception is here somewhere "Nicolette Jones (author)"
+                }
             }
             author = author.trim();
 
             authorSet.add(authorService.saveAuthor(author));
         }
 
-        return new EGlobalBook(firstBook.getIsbn(), null, -1, firstBook.getEuro_price(), firstBook.getDiscount_euro(),
+        return new EGlobalBook(firstBook.getIsbn(), null, null, firstBook.getEuro_price(), firstBook.getDiscount_euro(),
                                             firstBook.getType(), firstBook.getLinkBookPage(), firstBook.getName(), 
                                             firstBook.getSubtitle(), null, firstBook.getEdition(), firstBook.getPublisher(),
-                                            firstBook.getPublished_country(), firstBook.getLanguage(), -1, firstBook.getHeight(),
+                                            firstBook.getPublished_country(), firstBook.getLanguage(), null, firstBook.getHeight(),
                                             firstBook.getWidth(), firstBook.getSpine(), firstBook.getWeight(), firstBook.getShortBlurb(),
                                             firstBook.getLongBlurb(),
-                                            firstBook.getBlurbReview(), -1, null, null, null, null, null,
-                                            new ArrayList<>(), new ArrayList<>(), authorSet);
+                                            firstBook.getBlurbReview(), null, null, null, null, null, null,
+                                            new ArrayList<>(), new ArrayList<>(), authorSet, "blackwell");
     }
 
     public EGlobalBook secondBookToEGlobalBook(EBookSecond secondBook){
@@ -127,14 +132,14 @@ public class GlobalBookDuplicateService {
 
         int year = Integer.parseInt(secondBook.getOriginalPublicationYear());
 
-        return new EGlobalBook( secondBook.getIsbn13(), secondBook.getIsbn(), year,-1, 
-                                -1, null, null, secondBook.getTitle(), 
+        return new EGlobalBook( secondBook.getIsbn13(), secondBook.getIsbn(), year,null,
+                                null, null, null, secondBook.getTitle(),
                                 null, secondBook.getOriginalTitle(), null,
-                                null, null, null, -1,
-                                -1,-1,-1,-1,
+                                null, null, null, null,
+                                null,null,null,null,
                                 null,null,null, 
                                 secondBook.getAverageRating(), secondBook.getImageUrl(), secondBook.getSmallImageUrl(), null,
-                                null, null, new ArrayList<>(), new ArrayList<>(), authorSet);
+                                null, null, new ArrayList<>(), new ArrayList<>(), authorSet, "source2");
     }
 
     public EGlobalBook thirdBookToEGlobalBook(EBookThird thirdBook){
@@ -171,16 +176,21 @@ public class GlobalBookDuplicateService {
 
         // last for characters of the string are year
         String date = thirdBook.getFirstPublishDate();
-        int year = Integer.parseInt(date.substring(date.length()-4));
+        int year = -1;
+        try {
+            year = Integer.parseInt(date.substring(date.length() - 4));
+        } catch (Exception e){
+            // TODO parser for dates like "Sep-96" "Mar-01"
+        }
 
-        return new EGlobalBook( thirdBook.getIsbn13(), thirdBook.getIsbn(), year,-1, 
-                                -1, null, null, thirdBook.getTitle(), 
+        return new EGlobalBook( thirdBook.getIsbn13(), thirdBook.getIsbn(), year,null,
+                                null, null, null, thirdBook.getTitle(),
                                 null, null, null,
-                                null, null, thirdBook.getLanguage(), -1,
-                                -1,-1,-1,-1,
+                                null, null, thirdBook.getLanguage(), null,
+                                null,null,null,null,
                                 null,thirdBook.getDescription(), null, 
                                 thirdBook.getAvgRating(), null, null, thirdBook.getSeries(),
-                                thirdBook.getPlaces(),thirdBook.getAwards(), new ArrayList<>(), new ArrayList<>(), authorSet);
+                                thirdBook.getPlaces(),thirdBook.getAwards(), new ArrayList<>(), new ArrayList<>(), authorSet, "source3");
     }
 
 }

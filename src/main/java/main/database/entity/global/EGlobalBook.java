@@ -1,6 +1,7 @@
 package main.database.entity.global;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -11,6 +12,7 @@ import lombok.ToString;
 import main.database.entity.EBook;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -30,11 +32,11 @@ public class EGlobalBook extends EBook {
     @Column(name = "isbn10")
     private String isbn10;
     @Column(name = "publication_date")
-    private int publication_date;
+    private Integer publication_date;
     @Column(name = "euro_price")
-    private double euroPrice;
+    private Double euroPrice;
     @Column(name = "euro_discount")
-    private double euroDiscount;
+    private Double euroDiscount;
     @Column(name = "type")
     private String type;
     @Column(name = "link_book_page")
@@ -54,15 +56,15 @@ public class EGlobalBook extends EBook {
     @Column(name = "language")
     private String language;
     @Column(name = "num_pages")
-    private int numPages;
+    private Integer numPages;
     @Column(name = "height")
-    private double height;
+    private Double height;
     @Column(name = "width")
-    private double width;
+    private Double width;
     @Column(name = "spine")
-    private double spine;
+    private Double spine;
     @Column(name = "weight")
-    private double weight;
+    private Double weight;
     @Column(name = "short_description", columnDefinition = "text")
     private String short_description;
     @Column(name = "long_description", columnDefinition = "text")
@@ -70,7 +72,7 @@ public class EGlobalBook extends EBook {
     @Column(name = "review", columnDefinition = "text")
     private String review;
     @Column(name = "average_rating")
-    private double averageRating;
+    private Double averageRating;
     @Column(name = "image_url")
     private String imageUrl;
     @Column(name = "small_image_url")
@@ -81,24 +83,27 @@ public class EGlobalBook extends EBook {
     private String places;
     @Column(name = "awards", columnDefinition = "text")
     private String awards;
+    @Column(name = "source")
+    private String source;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    private ArrayList<EGlobalCharacter> characters;
+    private List<EGlobalCharacter> characters;
     @ManyToMany(fetch = FetchType.LAZY)
-    private ArrayList<EGlobalGenre> genres;
+    private List<EGlobalGenre> genres;
     @ManyToMany(fetch = FetchType.LAZY)
-    private ArrayList<EGlobalAuthor> authors;
+    private List<EGlobalAuthor> authors;
 
 
     public EGlobalBook(
-        String isbn13, String isbn10, int publication_date, double euroPrice,
-        double euroDiscount, String type, String linkBookPage, String title,
+        String isbn13, String isbn10, Integer publication_date, Double euroPrice,
+        Double euroDiscount, String type, String linkBookPage, String title,
         String subtitle, String originalTitle, String edition,
-        String publisher, String publishedCountry, String language, int numPages,
-        double height, double width, double spine, double weight,
+        String publisher, String publishedCountry, String language, Integer numPages,
+        Double height, Double width, Double spine, Double weight,
         String short_description, String long_description, String review,
-        double averageRating, String imageUrl, String smallImageUrl, String series,
-        String places, String awards, ArrayList<EGlobalCharacter> characters, ArrayList<EGlobalGenre> genres, ArrayList<EGlobalAuthor> authors
+        Double averageRating, String imageUrl, String smallImageUrl, String series,
+        String places, String awards, ArrayList<EGlobalCharacter> characters,
+        ArrayList<EGlobalGenre> genres, ArrayList<EGlobalAuthor> authors, String source
     ) {
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;
@@ -131,13 +136,16 @@ public class EGlobalBook extends EBook {
         this.awards = awards;
         this.characters = characters;
         this.places = places;
+        this.source = source;
     }
 
-    public EGlobalBook(String isbn13, String isbn10, int publication_date, double euroPrice,
-                       double euroDiscount, String type, String linkBookPage, String title, String subtitle,
+    public EGlobalBook(String isbn13, String isbn10, Integer publication_date, Double euroPrice,
+                       Double euroDiscount, String type, String linkBookPage, String title, String subtitle,
                        String originalTitle, String edition, String publisher, String publishedCountry,
-                       String language, int numPages, double height, double width, double spine, double weight, String short_description, String long_description,
-                       String review, double averageRating, String imageUrl, String smallImageUrl, String series, String places, String awards) {
+                       String language, Integer numPages, Double height, Double width, Double spine,
+                       Double weight, String short_description, String long_description,
+                       String review, Double averageRating, String imageUrl, String smallImageUrl,
+                       String series, String places, String awards, String source) {
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;
         this.publication_date = publication_date;
@@ -166,9 +174,9 @@ public class EGlobalBook extends EBook {
         this.series = series;
         this.places = places;
         this.awards = awards;
-
-        this.characters = new ArrayList<EGlobalCharacter>();
-        this.authors = new ArrayList<EGlobalAuthor>();
-        this.genres = new ArrayList<EGlobalGenre>();
+        this.source = source;
+        this.characters = new ArrayList<>();
+        this.authors = new ArrayList<>();
+        this.genres = new ArrayList<>();
     }
 }
