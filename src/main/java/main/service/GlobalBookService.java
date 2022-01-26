@@ -59,4 +59,19 @@ public class GlobalBookService {
         book.getGenres().add(genre);
         bookRepository.save(book);
     }
+
+    public void removeAuthor(EGlobalBook book, EGlobalAuthor author){
+        book.getAuthors().remove(author);
+        bookRepository.save(book);
+    }
+
+    public void removeCharacter(EGlobalBook book, EGlobalCharacter character){
+        book.getAuthors().remove(character);
+        bookRepository.save(book);
+    }
+
+    public void removeGenre(EGlobalBook book, EGlobalGenre genre){
+        book.getAuthors().remove(genre);
+        bookRepository.save(book);
+    }
 }
