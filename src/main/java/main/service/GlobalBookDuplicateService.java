@@ -205,9 +205,6 @@ public class GlobalBookDuplicateService {
             authorSet.add(authorService.saveAuthor(author.trim()));
         }
 
-        // what to do here?
-        //authorSet.add(authorService.saveAuthor(author));
-
         int year = Integer.parseInt(secondBook.getOriginalPublicationYear());
 
         return new EGlobalBook(secondBook.getIsbn13(), secondBook.getIsbn(), year, null,
@@ -229,9 +226,6 @@ public class GlobalBookDuplicateService {
         for (String author : authors) {
             authorSet.add(authorService.saveAuthor(author.trim()));
         }
-
-        // what to do here?
-        //authorSet.add(authorService.saveAuthor(author));
 
         // Save genre list
         ArrayList<EGlobalGenre> genreSet = new ArrayList<EGlobalGenre>();
