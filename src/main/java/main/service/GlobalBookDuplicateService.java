@@ -85,7 +85,6 @@ public class GlobalBookDuplicateService {
         );
     }
     public void insertSecondSource() {
-//        bookRepo.saveAll(
         List<EGlobalBook> books =
                 StreamSupport.stream(secondRepo.findAll().spliterator(), false)
                 .map(this::secondBookToEGlobalBook)
@@ -93,11 +92,18 @@ public class GlobalBookDuplicateService {
                 );
         for (EGlobalBook book : books) {
             Optional<EGlobalBook> globalBook = bookRepo.findByIsbn13(book.getIsbn13());
-            if (!globalBook.isPresent()){
-             bookRepo.save(book);
+            Optional<EGlobalBook> globalBook2 = bookRepo.findByIsbn10(book.getIsbn10());
+            if (!globalBook.isPresent() || !globalBook2.isPresent()){
+                bookRepo.save(book);
             }
             else {
-                //TODO
+                // todo authors?
+                if (!book.getPublication_date().equals("")) globalBook.get().setPublication_date(book.getPublication_date());
+                if (book.getOriginalTitle().equals("")) globalBook.get().setOriginalTitle(book.getOriginalTitle());
+                if (!book.getTitle().equals("")) globalBook.get().setTitle(book.getTitle());
+                if (!book.getAverageRating().equals("")) globalBook.get().setAverageRating(book.getAverageRating());
+                if (!book.getImageUrl().equals("")) globalBook.get().setImageUrl(book.getImageUrl());
+                if (!book.getSmallImageUrl().equals("")) globalBook.get().setSmallImageUrl(book.getSmallImageUrl());
             }
         }
     }
