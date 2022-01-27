@@ -120,8 +120,10 @@ public class GlobalBookDuplicateService {
                         .collect(Collectors.toList()
         );
         for (EGlobalBook book : books) {
-            Optional<EGlobalBook> globalBook = bookRepo.findByIsbn13(book.getIsbn13());
-            if (!globalBook.isPresent()){
+            Optional<EGlobalBook> globalBook13 = bookRepo.findByIsbn13(book.getIsbn13());
+            EGlobalBook globalBook10 = bookRepo.findByIsbn10(book.getIsbn13()).orElse(null);
+            EGlobalBook globalBook = globalBook13.orElse(globalBook10);
+            if (globalBook == null){
                 bookRepo.save(book);
             } else {
                 if (isNullOrEmpty(globalBook.getTitle())) {
@@ -153,13 +155,12 @@ public class GlobalBookDuplicateService {
                 if (globalBook.getAverageRating() == null) {
                     globalBook.setAverageRating(book.getAverageRating());
                 }
-
-
-            }
-            else {
-                //TODO
             }
         }
+    }
+
+    private boolean isNullOrEmpty(String string){
+        return string == null || string.isEmpty();
     }
 
     public EGlobalBook firstBookToEGlobalBook(EBookFirst firstBook) {
