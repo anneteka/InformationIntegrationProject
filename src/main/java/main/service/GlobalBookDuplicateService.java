@@ -139,7 +139,11 @@ public class GlobalBookDuplicateService {
                 globalBook.getGenres().addAll(book.getGenres());
                 globalBook.getAuthors().addAll(book.getAuthors());
                 globalBook.getCharacters().addAll(book.getCharacters());
-                globalBook.setPlaces(globalBook.getPlaces() + ", " + book.getPlaces());
+                if (isNullOrEmpty(globalBook.getPlaces())) {
+                    globalBook.setPlaces(book.getPlaces());
+                } else {
+                    globalBook.setPlaces(globalBook.getPlaces() + ", "+book.getPlaces());
+                }
                 if (isNullOrEmpty(globalBook.getIsbn13())) {
                     globalBook.setIsbn13(book.getIsbn13());
                 }
