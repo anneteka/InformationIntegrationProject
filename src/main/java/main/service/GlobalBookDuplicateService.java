@@ -97,9 +97,9 @@ public class GlobalBookDuplicateService {
                 bookRepo.save(book);
             }
             else {
-                // todo authors?
+                globalBook.get().getAuthors().addAll(book.getAuthors());
                 if (!book.getPublication_date().equals("")) globalBook.get().setPublication_date(book.getPublication_date());
-                if (book.getOriginalTitle().equals("")) globalBook.get().setOriginalTitle(book.getOriginalTitle());
+                if (!book.getOriginalTitle().equals("")) globalBook.get().setOriginalTitle(book.getOriginalTitle());
                 if (!book.getTitle().equals("")) globalBook.get().setTitle(book.getTitle());
                 if (!book.getAverageRating().equals("")) globalBook.get().setAverageRating(book.getAverageRating());
                 if (!book.getImageUrl().equals("")) globalBook.get().setImageUrl(book.getImageUrl());
@@ -164,9 +164,6 @@ public class GlobalBookDuplicateService {
             authorSet.add(authorService.saveAuthor(author.trim()));
         }
 
-        // what to do here?
-        //authorSet.add(authorService.saveAuthor(author));
-
         int year = Integer.parseInt(secondBook.getOriginalPublicationYear());
 
         return new EGlobalBook(secondBook.getIsbn13(), secondBook.getIsbn(), year, null,
@@ -188,9 +185,6 @@ public class GlobalBookDuplicateService {
         for (String author : authors) {
             authorSet.add(authorService.saveAuthor(author.trim()));
         }
-
-        // what to do here?
-        //authorSet.add(authorService.saveAuthor(author));
 
         // Save genre list
         ArrayList<EGlobalGenre> genreSet = new ArrayList<EGlobalGenre>();
