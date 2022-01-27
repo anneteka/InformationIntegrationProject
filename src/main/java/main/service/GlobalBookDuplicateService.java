@@ -123,6 +123,38 @@ public class GlobalBookDuplicateService {
             Optional<EGlobalBook> globalBook = bookRepo.findByIsbn13(book.getIsbn13());
             if (!globalBook.isPresent()){
                 bookRepo.save(book);
+            } else {
+                if (isNullOrEmpty(globalBook.getTitle())) {
+                    globalBook.setTitle(book.getTitle());
+                }
+                globalBook.getAuthors().addAll(book.getAuthors());
+                if (isNullOrEmpty(globalBook.getSeries())) {
+                    globalBook.setSeries(book.getSeries());
+                }
+                if (isNullOrEmpty(globalBook.getLongDescription())) {
+                    globalBook.setLongDescription(book.getLongDescription());
+                }
+                globalBook.getGenres().addAll(book.getGenres());
+                globalBook.getAuthors().addAll(book.getAuthors());
+                globalBook.getCharacters().addAll(book.getCharacters());
+                globalBook.setPlaces(globalBook.getPlaces() + ", " + book.getPlaces());
+                if (isNullOrEmpty(globalBook.getIsbn13())) {
+                    globalBook.setIsbn13(book.getIsbn13());
+                }
+                if (isNullOrEmpty(globalBook.getIsbn10())) {
+                    globalBook.setIsbn10(book.getIsbn10());
+                }
+                if (isNullOrEmpty(globalBook.getLanguage())) {
+                    globalBook.setLanguage(book.getLanguage());
+                }
+                if (globalBook.getPublication_date() == null) {
+                    globalBook.setPublication_date(book.getPublication_date());
+                }
+                if (globalBook.getAverageRating() == null) {
+                    globalBook.setAverageRating(book.getAverageRating());
+                }
+
+
             }
             else {
                 //TODO
