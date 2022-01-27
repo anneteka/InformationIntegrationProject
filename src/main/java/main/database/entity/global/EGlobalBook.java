@@ -1,7 +1,6 @@
 package main.database.entity.global;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -66,9 +65,9 @@ public class EGlobalBook extends EBook {
     @Column(name = "weight")
     private Double weight;
     @Column(name = "short_description", columnDefinition = "text")
-    private String short_description;
+    private String shortDescription;
     @Column(name = "long_description", columnDefinition = "text")
-    private String long_description;
+    private String longDescription;
     @Column(name = "review", columnDefinition = "text")
     private String review;
     @Column(name = "average_rating")
@@ -95,15 +94,15 @@ public class EGlobalBook extends EBook {
 
 
     public EGlobalBook(
-        String isbn13, String isbn10, Integer publication_date, Double euroPrice,
-        Double euroDiscount, String type, String linkBookPage, String title,
-        String subtitle, String originalTitle, String edition,
-        String publisher, String publishedCountry, String language, Integer numPages,
-        Double height, Double width, Double spine, Double weight,
-        String short_description, String long_description, String review,
-        Double averageRating, String imageUrl, String smallImageUrl, String series,
-        String places, String awards, ArrayList<EGlobalCharacter> characters,
-        ArrayList<EGlobalGenre> genres, ArrayList<EGlobalAuthor> authors, String source
+            String isbn13, String isbn10, Integer publication_date, Double euroPrice,
+            Double euroDiscount, String type, String linkBookPage, String title,
+            String subtitle, String originalTitle, String edition,
+            String publisher, String publishedCountry, String language, Integer numPages,
+            Double height, Double width, Double spine, Double weight,
+            String shortDescription, String longDescription, String review,
+            Double averageRating, String imageUrl, String smallImageUrl, String series,
+            String places, String awards, ArrayList<EGlobalCharacter> characters,
+            ArrayList<EGlobalGenre> genres, ArrayList<EGlobalAuthor> authors, String source
     ) {
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;
@@ -125,8 +124,8 @@ public class EGlobalBook extends EBook {
         this.width = width;
         this.spine = spine;
         this.weight = weight;
-        this.short_description = short_description;
-        this.long_description = long_description;
+        this.shortDescription = shortDescription;
+        this.longDescription = longDescription;
         this.review = review;
         this.averageRating = averageRating;
         this.imageUrl = imageUrl;
@@ -143,7 +142,7 @@ public class EGlobalBook extends EBook {
                        Double euroDiscount, String type, String linkBookPage, String title, String subtitle,
                        String originalTitle, String edition, String publisher, String publishedCountry,
                        String language, Integer numPages, Double height, Double width, Double spine,
-                       Double weight, String short_description, String long_description,
+                       Double weight, String shortDescription, String longDescription,
                        String review, Double averageRating, String imageUrl, String smallImageUrl,
                        String series, String places, String awards, String source) {
         this.isbn13 = isbn13;
@@ -165,8 +164,8 @@ public class EGlobalBook extends EBook {
         this.width = width;
         this.spine = spine;
         this.weight = weight;
-        this.short_description = short_description;
-        this.long_description = long_description;
+        this.shortDescription = shortDescription;
+        this.longDescription = longDescription;
         this.review = review;
         this.averageRating = averageRating;
         this.imageUrl = imageUrl;
