@@ -139,7 +139,11 @@ public class GlobalBookDuplicateService {
                 globalBook.getGenres().addAll(book.getGenres());
                 globalBook.getAuthors().addAll(book.getAuthors());
                 globalBook.getCharacters().addAll(book.getCharacters());
-                globalBook.setPlaces(globalBook.getPlaces() + ", " + book.getPlaces());
+                if (isNullOrEmpty(globalBook.getPlaces())) {
+                    globalBook.setPlaces(book.getPlaces());
+                } else {
+                    globalBook.setPlaces(globalBook.getPlaces() + ", "+book.getPlaces());
+                }
                 if (isNullOrEmpty(globalBook.getIsbn13())) {
                     globalBook.setIsbn13(book.getIsbn13());
                 }
@@ -207,9 +211,6 @@ public class GlobalBookDuplicateService {
             authorSet.add(authorService.saveAuthor(author.trim()));
         }
 
-        // what to do here?
-        //authorSet.add(authorService.saveAuthor(author));
-
         int year = Integer.parseInt(secondBook.getOriginalPublicationYear());
 
         return new EGlobalBook(secondBook.getIsbn13(), secondBook.getIsbn(), year, null,
@@ -231,9 +232,6 @@ public class GlobalBookDuplicateService {
         for (String author : authors) {
             authorSet.add(authorService.saveAuthor(author.trim()));
         }
-
-        // what to do here?
-        //authorSet.add(authorService.saveAuthor(author));
 
         // Save genre list
         ArrayList<EGlobalGenre> genreSet = new ArrayList<EGlobalGenre>();
