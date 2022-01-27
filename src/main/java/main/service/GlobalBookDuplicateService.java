@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.List;
+import java.util.List;import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -35,22 +35,22 @@ import java.util.ArrayList;
 
 @Service
 public class GlobalBookDuplicateService {
-    private GlobalAuthorRepository authorRepo;
-    private GlobalBookRepository bookRepo;
-    private GlobalCharacterRepository characterRepo;
-    private GlobalGenreRepository genreRepo;
-    private FirstRepository firstRepo;
-    private SecondRepository secondRepo;
-    private ThirdRepository thirdRepo;
-    private GAuthorService authorService;
-    private GGenreService genreService;
-    private GCharacterService characterService;
+    private final GlobalAuthorRepository authorRepo;
+    private final GlobalBookRepository bookRepo;
+    private final GlobalCharacterRepository characterRepo;
+    private final GlobalGenreRepository genreRepo;
+    private final FirstRepository firstRepo;
+    private final SecondRepository secondRepo;
+    private final ThirdRepository thirdRepo;
+    private final GAuthorService authorService;
+    private final GGenreService genreService;
+    private final GCharacterService characterService;
 
     @Autowired
     public GlobalBookDuplicateService(FirstRepository firstRepo, SecondRepository secondRepo, ThirdRepository thirdRepo,
-                                        GlobalAuthorRepository authorRepo, GlobalBookRepository bookRepo, 
-                                            GlobalCharacterRepository characterRepo, GlobalGenreRepository genreRepo,
-                                                GAuthorService authorService, GGenreService genreService, GCharacterService characterService) {
+                                      GlobalAuthorRepository authorRepo, GlobalBookRepository bookRepo,
+                                      GlobalCharacterRepository characterRepo, GlobalGenreRepository genreRepo,
+                                      GAuthorService authorService, GGenreService genreService, GCharacterService characterService) {
         this.firstRepo = firstRepo;
         this.secondRepo = secondRepo;
         this.thirdRepo = thirdRepo;
@@ -63,44 +63,75 @@ public class GlobalBookDuplicateService {
         this.characterService = characterService;
     }
 
-    public void setUpGlobalSchema(){
-        bookRepo.saveAll( 
-            StreamSupport.stream(firstRepo.findAll().spliterator(), false)       
-                .map(this::firstBookToEGlobalBook)
-                .collect(Collectors.toList())
-        );
+    public void setUpGlobalSchema() {
+        insertFirstSource();
 
-        bookRepo.saveAll( 
-            StreamSupport.stream(secondRepo.findAll().spliterator(), false)       
-                .map(this::secondBookToEGlobalBook)
-                .collect(Collectors.toList())
-        );
+        insertSecondSource();
 
-        bookRepo.saveAll( 
-            StreamSupport.stream(thirdRepo.findAll().spliterator(), false)       
-                .map(this::thirdBookToEGlobalBook)
-                .collect(Collectors.toList())
-        );
+        inserThirdSource();
 
+        mergeDuplicates();
     }
 
-    public EGlobalBook firstBookToEGlobalBook(EBookFirst firstBook){
-        ArrayList<EGlobalAuthor> authorSet = new ArrayList<EGlobalAuthor>();
-    
+    public void mergeDuplicates(){
+        //TODO similarity measure between the closet neighbours ?
+    }
+
+    public void insertFirstSource(){
+        bookRepo.saveAll(
+                StreamSupport.stream(firstRepo.findAll().spliterator(), false)
+                        .map(this::firstBookToEGlobalBook)
+                        .collect(Collectors.toList())
+        );
+    }
+    public void insertSecondSource() {
+//        bookRepo.saveAll(
+        List<EGlobalBook> books =
+                StreamSupport.stream(secondRepo.findAll().spliterator(), false)
+                .map(this::secondBookToEGlobalBook)
+                .collect(Collectors.toList()
+                );
+        for (EGlobalBook book : books) {
+            Optional<EGlobalBook> globalBook = bookRepo.findByIsbn13(book.getIsbn13());
+            if (!globalBook.isPresent()){
+             bookRepo.save(book);
+            }
+            else {
+                //TODO
+            }
+        }
+    }
+
+    public void inserThirdSource(){
+//        bookRepo.saveAll(
+        List<EGlobalBook> books =
+                StreamSupport.stream(thirdRepo.findAll().spliterator(), false)
+                        .map(this::thirdBookToEGlobalBook)
+                        .collect(Collectors.toList()
+        );
+        for (EGlobalBook book : books) {
+            Optional<EGlobalBook> globalBook = bookRepo.findByIsbn13(book.getIsbn13());
+            if (!globalBook.isPresent()){
+                bookRepo.save(book);
+            }
+            else {
+                //TODO
+            }
+        }
+    }
+
+    public EGlobalBook firstBookToEGlobalBook(EBookFirst firstBook) {
+        ArrayList<EGlobalAuthor> authorSet = new ArrayList<>();
+
         String authorList = firstBook.getAuthor();
 
         // filter out role inside of parathesese
-        String authors[] = authorList.split(",");
-        for (String author : authors){
-            if (author.contains("(") && author.contains(")")){
+        String[] authors = authorList.split(",");
+        for (String author : authors) {
+            if (author.contains("(") && author.contains(")")) {
                 int indexOpen = author.indexOf("(");
-                try {
-                    author = author.substring(0, indexOpen);
-                }
-                catch (StringIndexOutOfBoundsException e){
-                    System.out.println(author + " "+author.length()+" "+indexOpen );
-                    //TODO check for strings like bc exception is here somewhere "Nicolette Jones (author)"
-                }
+
+                author = author.substring(0, indexOpen);
             }
             author = author.trim();
 
@@ -108,22 +139,22 @@ public class GlobalBookDuplicateService {
         }
 
         return new EGlobalBook(firstBook.getIsbn(), null, null, firstBook.getEuro_price(), firstBook.getDiscount_euro(),
-                                            firstBook.getType(), firstBook.getLinkBookPage(), firstBook.getName(), 
-                                            firstBook.getSubtitle(), null, firstBook.getEdition(), firstBook.getPublisher(),
-                                            firstBook.getPublished_country(), firstBook.getLanguage(), null, firstBook.getHeight(),
-                                            firstBook.getWidth(), firstBook.getSpine(), firstBook.getWeight(), firstBook.getShortBlurb(),
-                                            firstBook.getLongBlurb(),
-                                            firstBook.getBlurbReview(), null, null, null, null, null, null,
-                                            new ArrayList<>(), new ArrayList<>(), authorSet, "blackwell");
+                firstBook.getType(), firstBook.getLinkBookPage(), firstBook.getName(),
+                firstBook.getSubtitle(), null, firstBook.getEdition(), firstBook.getPublisher(),
+                firstBook.getPublished_country(), firstBook.getLanguage(), null, firstBook.getHeight(),
+                firstBook.getWidth(), firstBook.getSpine(), firstBook.getWeight(), firstBook.getShortBlurb(),
+                firstBook.getLongBlurb(),
+                firstBook.getBlurbReview(), null, null, null, null, null, null,
+                new ArrayList<>(), new ArrayList<>(), authorSet, "blackwell");
     }
 
-    public EGlobalBook secondBookToEGlobalBook(EBookSecond secondBook){
+    public EGlobalBook secondBookToEGlobalBook(EBookSecond secondBook) {
         ArrayList<EGlobalAuthor> authorSet = new ArrayList<EGlobalAuthor>();
 
         String authorList = secondBook.getAuthors();
         String authors[] = authorList.split(",");
 
-        for (String author : authors){
+        for (String author : authors) {
             authorSet.add(authorService.saveAuthor(author.trim()));
         }
 
@@ -132,23 +163,23 @@ public class GlobalBookDuplicateService {
 
         int year = Integer.parseInt(secondBook.getOriginalPublicationYear());
 
-        return new EGlobalBook( secondBook.getIsbn13(), secondBook.getIsbn(), year,null,
-                                null, null, null, secondBook.getTitle(),
-                                null, secondBook.getOriginalTitle(), null,
-                                null, null, null, null,
-                                null,null,null,null,
-                                null,null,null, 
-                                secondBook.getAverageRating(), secondBook.getImageUrl(), secondBook.getSmallImageUrl(), null,
-                                null, null, new ArrayList<>(), new ArrayList<>(), authorSet, "source2");
+        return new EGlobalBook(secondBook.getIsbn13(), secondBook.getIsbn(), year, null,
+                null, null, null, secondBook.getTitle(),
+                null, secondBook.getOriginalTitle(), null,
+                null, null, null, null,
+                null, null, null, null,
+                null, null, null,
+                secondBook.getAverageRating(), secondBook.getImageUrl(), secondBook.getSmallImageUrl(), null,
+                null, null, new ArrayList<>(), new ArrayList<>(), authorSet, "source2");
     }
 
-    public EGlobalBook thirdBookToEGlobalBook(EBookThird thirdBook){
+    public EGlobalBook thirdBookToEGlobalBook(EBookThird thirdBook) {
         // Save author list
         ArrayList<EGlobalAuthor> authorSet = new ArrayList<EGlobalAuthor>();
         String authorList = thirdBook.getAuthor();
         String authors[] = authorList.split(",");
 
-        for (String author : authors){
+        for (String author : authors) {
             authorSet.add(authorService.saveAuthor(author.trim()));
         }
 
@@ -160,7 +191,7 @@ public class GlobalBookDuplicateService {
         String genreList = thirdBook.getAuthor();
         String genres[] = genreList.split(",");
 
-        for (String genre : genres){
+        for (String genre : genres) {
             genreSet.add(genreService.saveGenre(genre.trim()));
         }
 
@@ -169,28 +200,28 @@ public class GlobalBookDuplicateService {
         String characterList = thirdBook.getAuthor();
         String characters[] = characterList.split(",");
 
-        for (String character : characters){
+        for (String character : characters) {
             characterSet.add(characterService.saveCharacter(character.trim()));
         }
-        
+
 
         // last for characters of the string are year
         String date = thirdBook.getFirstPublishDate();
         int year = -1;
         try {
             year = Integer.parseInt(date.substring(date.length() - 4));
-        } catch (Exception e){
+        } catch (Exception e) {
             // TODO parser for dates like "Sep-96" "Mar-01"
         }
 
-        return new EGlobalBook( thirdBook.getIsbn13(), thirdBook.getIsbn(), year,null,
-                                null, null, null, thirdBook.getTitle(),
-                                null, null, null,
-                                null, null, thirdBook.getLanguage(), null,
-                                null,null,null,null,
-                                null,thirdBook.getDescription(), null, 
-                                thirdBook.getAvgRating(), null, null, thirdBook.getSeries(),
-                                thirdBook.getPlaces(),thirdBook.getAwards(), new ArrayList<>(), new ArrayList<>(), authorSet, "source3");
+        return new EGlobalBook(thirdBook.getIsbn13(), thirdBook.getIsbn(), year, null,
+                null, null, null, thirdBook.getTitle(),
+                null, null, null,
+                null, null, thirdBook.getLanguage(), null,
+                null, null, null, null,
+                null, thirdBook.getDescription(), null,
+                thirdBook.getAvgRating(), null, null, thirdBook.getSeries(),
+                thirdBook.getPlaces(), thirdBook.getAwards(), new ArrayList<>(), new ArrayList<>(), authorSet, "source3");
     }
 
 }
