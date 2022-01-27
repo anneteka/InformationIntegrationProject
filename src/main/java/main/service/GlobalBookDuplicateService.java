@@ -99,15 +99,15 @@ public class GlobalBookDuplicateService {
             }
             else {
 
-                if (!book.getIsbn10().equals(null)) globalBook.get().setIsbn10(book.getIsbn10());
-                if (!book.getIsbn13().equals(null)) globalBook.get().setIsbn13(book.getIsbn13());
+                if (isNullOrEmpty(book.getIsbn10())) globalBook.get().setIsbn10(book.getIsbn10());
+                if (isNullOrEmpty(book.getIsbn13())) globalBook.get().setIsbn13(book.getIsbn13());
                 globalBook.get().getAuthors().addAll(book.getAuthors());
-                if (!book.getPublication_date().equals(null)) globalBook.get().setPublication_date(book.getPublication_date());
-                if (!book.getOriginalTitle().equals(null)) globalBook.get().setOriginalTitle(book.getOriginalTitle());
-                if (!book.getTitle().equals(null)) globalBook.get().setTitle(book.getTitle());
-                if (!book.getAverageRating().equals(null)) globalBook.get().setAverageRating(book.getAverageRating());
-                if (!book.getImageUrl().equals(null)) globalBook.get().setImageUrl(book.getImageUrl());
-                if (!book.getSmallImageUrl().equals(null)) globalBook.get().setSmallImageUrl(book.getSmallImageUrl());
+                if (isNullOrEmpty(book.getPublication_date())) globalBook.get().setPublication_date(book.getPublication_date());
+                if (isNullOrEmpty(book.getOriginalTitle())) globalBook.get().setOriginalTitle(book.getOriginalTitle());
+                if (isNullOrEmpty(book.getTitle())) globalBook.get().setTitle(book.getTitle());
+                if (isNullOrEmpty(book.getAverageRating())) globalBook.get().setAverageRating(book.getAverageRating());
+                if (isNullOrEmpty(book.getImageUrl())) globalBook.get().setImageUrl(book.getImageUrl());
+                if (isNullOrEmpty(book.getSmallImageUrl())) globalBook.get().setSmallImageUrl(book.getSmallImageUrl());
             }
         }
     }
@@ -161,6 +161,12 @@ public class GlobalBookDuplicateService {
 
     private boolean isNullOrEmpty(String string){
         return string == null || string.isEmpty();
+    }
+    private boolean isNullOrEmpty(Integer number){
+        return number.equals(null);
+    }
+    private boolean isNullOrEmpty(Double number){
+        return number.equals(null);
     }
 
     public EGlobalBook firstBookToEGlobalBook(EBookFirst firstBook) {
