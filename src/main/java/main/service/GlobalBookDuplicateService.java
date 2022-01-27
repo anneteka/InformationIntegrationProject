@@ -112,11 +112,11 @@ public class GlobalBookDuplicateService {
                 bookRepo.save(book);
             } else {
                 if (isNullOrEmpty(globalBook.getTitle())) {
-                    book.getTitle();
+                    globalBook.setTitle(book.getTitle());
                 }
                 globalBook.getAuthors().addAll(book.getAuthors());
                 if (isNullOrEmpty(globalBook.getSeries())) {
-                    book.getSeries();
+                    globalBook.setSeries(book.getSeries());
                 }
                 if (isNullOrEmpty(globalBook.getLongDescription())) {
                     globalBook.setLongDescription(book.getLongDescription());
