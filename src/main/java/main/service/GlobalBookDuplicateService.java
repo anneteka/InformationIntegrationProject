@@ -14,21 +14,13 @@ import main.database.repository.GlobalCharacterRepository;
 import main.database.repository.GlobalGenreRepository;
 import main.database.repository.SecondRepository;
 import main.database.repository.ThirdRepository;
-import main.util.CsvParserUtil;
-import main.util.cvs.model.BlackwellBook;
-import main.util.cvs.model.CsvSecondBook;
-import main.util.cvs.model.CsvThirdBook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;import java.util.Optional;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
 import java.util.ArrayList;
 
@@ -73,51 +65,89 @@ public class GlobalBookDuplicateService {
         mergeDuplicates();
     }
 
-    public void mergeDuplicates(){
+    public void mergeDuplicates() {
         //TODO similarity measure between the closet neighbours ?
     }
 
-    public void insertFirstSource(){
+    public void insertFirstSource() {
         bookRepo.saveAll(
                 StreamSupport.stream(firstRepo.findAll().spliterator(), false)
                         .map(this::firstBookToEGlobalBook)
                         .collect(Collectors.toList())
         );
     }
+
     public void insertSecondSource() {
 //        bookRepo.saveAll(
         List<EGlobalBook> books =
                 StreamSupport.stream(secondRepo.findAll().spliterator(), false)
-                .map(this::secondBookToEGlobalBook)
-                .collect(Collectors.toList()
-                );
+                        .map(this::secondBookToEGlobalBook)
+                        .collect(Collectors.toList()
+                        );
         for (EGlobalBook book : books) {
             Optional<EGlobalBook> globalBook = bookRepo.findByIsbn13(book.getIsbn13());
-            if (!globalBook.isPresent()){
-             bookRepo.save(book);
-            }
-            else {
+            if (!globalBook.isPresent()) {
+                bookRepo.save(book);
+            } else {
                 //TODO
             }
         }
     }
 
-    public void inserThirdSource(){
+    public void inserThirdSource() {
 //        bookRepo.saveAll(
         List<EGlobalBook> books =
                 StreamSupport.stream(thirdRepo.findAll().spliterator(), false)
                         .map(this::thirdBookToEGlobalBook)
                         .collect(Collectors.toList()
-        );
+                        );
         for (EGlobalBook book : books) {
-            Optional<EGlobalBook> globalBook = bookRepo.findByIsbn13(book.getIsbn13());
-            if (!globalBook.isPresent()){
+
+            Optional<EGlobalBook> globalBook13 = bookRepo.findByIsbn13(book.getIsbn13());
+            EGlobalBook globalBook10 = bookRepo.findByIsbn10(book.getIsbn10()).orElse(null);
+
+            EGlobalBook globalBook = globalBook13.orElse(globalBook10);
+
+            if (globalBook == null) {
                 bookRepo.save(book);
-            }
-            else {
-                //TODO
+            } else {
+                if (isNullOrEmpty(globalBook.getTitle())) {
+                    book.getTitle();
+                }
+                globalBook.getAuthors().addAll(book.getAuthors());
+                if (isNullOrEmpty(globalBook.getSeries())) {
+                    book.getSeries();
+                }
+                if (isNullOrEmpty(globalBook.getLongDescription())) {
+                    globalBook.setLongDescription(book.getLongDescription());
+                }
+                globalBook.getGenres().addAll(book.getGenres());
+                globalBook.getAuthors().addAll(book.getAuthors());
+                globalBook.getCharacters().addAll(book.getCharacters());
+                globalBook.setPlaces(globalBook.getPlaces() + ", " + book.getPlaces());
+                if (isNullOrEmpty(globalBook.getIsbn13())) {
+                    globalBook.setIsbn13(book.getIsbn13());
+                }
+                if (isNullOrEmpty(globalBook.getIsbn10())) {
+                    globalBook.setIsbn10(book.getIsbn10());
+                }
+                if (isNullOrEmpty(globalBook.getLanguage())) {
+                    globalBook.setLanguage(book.getLanguage());
+                }
+                if (globalBook.getPublication_date() == null) {
+                    globalBook.setPublication_date(book.getPublication_date());
+                }
+                if (globalBook.getAverageRating() == null) {
+                    globalBook.setAverageRating(book.getAverageRating());
+                }
+
+
             }
         }
+    }
+
+    private boolean isNullOrEmpty(String string) {
+        return string == null || string.isEmpty();
     }
 
     public EGlobalBook firstBookToEGlobalBook(EBookFirst firstBook) {
