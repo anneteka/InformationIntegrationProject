@@ -97,13 +97,16 @@ public class GlobalBookDuplicateService {
                 bookRepo.save(book);
             }
             else {
+                
+                if (!book.getIsbn10().equals(null)) globalBook.get().setIsbn10(book.getIsbn10());
+                if (!book.getIsbn13().equals(null)) globalBook.get().setIsbn13(book.getIsbn13());
                 globalBook.get().getAuthors().addAll(book.getAuthors());
-                if (!book.getPublication_date().equals("")) globalBook.get().setPublication_date(book.getPublication_date());
-                if (!book.getOriginalTitle().equals("")) globalBook.get().setOriginalTitle(book.getOriginalTitle());
-                if (!book.getTitle().equals("")) globalBook.get().setTitle(book.getTitle());
-                if (!book.getAverageRating().equals("")) globalBook.get().setAverageRating(book.getAverageRating());
-                if (!book.getImageUrl().equals("")) globalBook.get().setImageUrl(book.getImageUrl());
-                if (!book.getSmallImageUrl().equals("")) globalBook.get().setSmallImageUrl(book.getSmallImageUrl());
+                if (!book.getPublication_date().equals(null)) globalBook.get().setPublication_date(book.getPublication_date());
+                if (!book.getOriginalTitle().equals(null)) globalBook.get().setOriginalTitle(book.getOriginalTitle());
+                if (!book.getTitle().equals(null)) globalBook.get().setTitle(book.getTitle());
+                if (!book.getAverageRating().equals(null)) globalBook.get().setAverageRating(book.getAverageRating());
+                if (!book.getImageUrl().equals(null)) globalBook.get().setImageUrl(book.getImageUrl());
+                if (!book.getSmallImageUrl().equals(null)) globalBook.get().setSmallImageUrl(book.getSmallImageUrl());
             }
         }
     }
