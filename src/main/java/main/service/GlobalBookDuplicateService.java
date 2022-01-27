@@ -14,13 +14,21 @@ import main.database.repository.GlobalCharacterRepository;
 import main.database.repository.GlobalGenreRepository;
 import main.database.repository.SecondRepository;
 import main.database.repository.ThirdRepository;
+import main.util.CsvParserUtil;
+import main.util.cvs.model.BlackwellBook;
+import main.util.cvs.model.CsvSecondBook;
+import main.util.cvs.model.CsvThirdBook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.io.FileNotFoundException;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
 import java.util.ArrayList;
 
@@ -65,89 +73,61 @@ public class GlobalBookDuplicateService {
         mergeDuplicates();
     }
 
-    public void mergeDuplicates() {
+    public void mergeDuplicates(){
         //TODO similarity measure between the closet neighbours ?
     }
 
-    public void insertFirstSource() {
+    public void insertFirstSource(){
         bookRepo.saveAll(
                 StreamSupport.stream(firstRepo.findAll().spliterator(), false)
                         .map(this::firstBookToEGlobalBook)
                         .collect(Collectors.toList())
         );
     }
-
     public void insertSecondSource() {
 //        bookRepo.saveAll(
         List<EGlobalBook> books =
                 StreamSupport.stream(secondRepo.findAll().spliterator(), false)
-                        .map(this::secondBookToEGlobalBook)
-                        .collect(Collectors.toList()
-                        );
+                .map(this::secondBookToEGlobalBook)
+                .collect(Collectors.toList()
+                );
         for (EGlobalBook book : books) {
             Optional<EGlobalBook> globalBook = bookRepo.findByIsbn13(book.getIsbn13());
-            if (!globalBook.isPresent()) {
+            Optional<EGlobalBook> globalBook2 = bookRepo.findByIsbn10(book.getIsbn10());
+            if (!globalBook.isPresent() || !globalBook2.isPresent()){
                 bookRepo.save(book);
-            } else {
-                //TODO
+            }
+            else {
+
+                if (!book.getIsbn10().equals(null)) globalBook.get().setIsbn10(book.getIsbn10());
+                if (!book.getIsbn13().equals(null)) globalBook.get().setIsbn13(book.getIsbn13());
+                globalBook.get().getAuthors().addAll(book.getAuthors());
+                if (!book.getPublication_date().equals(null)) globalBook.get().setPublication_date(book.getPublication_date());
+                if (!book.getOriginalTitle().equals(null)) globalBook.get().setOriginalTitle(book.getOriginalTitle());
+                if (!book.getTitle().equals(null)) globalBook.get().setTitle(book.getTitle());
+                if (!book.getAverageRating().equals(null)) globalBook.get().setAverageRating(book.getAverageRating());
+                if (!book.getImageUrl().equals(null)) globalBook.get().setImageUrl(book.getImageUrl());
+                if (!book.getSmallImageUrl().equals(null)) globalBook.get().setSmallImageUrl(book.getSmallImageUrl());
             }
         }
     }
 
-    public void inserThirdSource() {
+    public void inserThirdSource(){
 //        bookRepo.saveAll(
         List<EGlobalBook> books =
                 StreamSupport.stream(thirdRepo.findAll().spliterator(), false)
                         .map(this::thirdBookToEGlobalBook)
                         .collect(Collectors.toList()
-                        );
+        );
         for (EGlobalBook book : books) {
-
-            Optional<EGlobalBook> globalBook13 = bookRepo.findByIsbn13(book.getIsbn13());
-            EGlobalBook globalBook10 = bookRepo.findByIsbn10(book.getIsbn10()).orElse(null);
-
-            EGlobalBook globalBook = globalBook13.orElse(globalBook10);
-
-            if (globalBook == null) {
+            Optional<EGlobalBook> globalBook = bookRepo.findByIsbn13(book.getIsbn13());
+            if (!globalBook.isPresent()){
                 bookRepo.save(book);
-            } else {
-                if (isNullOrEmpty(globalBook.getTitle())) {
-                    book.getTitle();
-                }
-                globalBook.getAuthors().addAll(book.getAuthors());
-                if (isNullOrEmpty(globalBook.getSeries())) {
-                    book.getSeries();
-                }
-                if (isNullOrEmpty(globalBook.getLongDescription())) {
-                    globalBook.setLongDescription(book.getLongDescription());
-                }
-                globalBook.getGenres().addAll(book.getGenres());
-                globalBook.getAuthors().addAll(book.getAuthors());
-                globalBook.getCharacters().addAll(book.getCharacters());
-                globalBook.setPlaces(globalBook.getPlaces() + ", " + book.getPlaces());
-                if (isNullOrEmpty(globalBook.getIsbn13())) {
-                    globalBook.setIsbn13(book.getIsbn13());
-                }
-                if (isNullOrEmpty(globalBook.getIsbn10())) {
-                    globalBook.setIsbn10(book.getIsbn10());
-                }
-                if (isNullOrEmpty(globalBook.getLanguage())) {
-                    globalBook.setLanguage(book.getLanguage());
-                }
-                if (globalBook.getPublication_date() == null) {
-                    globalBook.setPublication_date(book.getPublication_date());
-                }
-                if (globalBook.getAverageRating() == null) {
-                    globalBook.setAverageRating(book.getAverageRating());
-                }
-
-
+            }
+            else {
+                //TODO
             }
         }
-    }
-
-    private boolean isNullOrEmpty(String string) {
-        return string == null || string.isEmpty();
     }
 
     public EGlobalBook firstBookToEGlobalBook(EBookFirst firstBook) {
