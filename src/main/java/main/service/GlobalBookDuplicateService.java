@@ -14,21 +14,13 @@ import main.database.repository.GlobalCharacterRepository;
 import main.database.repository.GlobalGenreRepository;
 import main.database.repository.SecondRepository;
 import main.database.repository.ThirdRepository;
-import main.util.CsvParserUtil;
-import main.util.cvs.model.BlackwellBook;
-import main.util.cvs.model.CsvSecondBook;
-import main.util.cvs.model.CsvThirdBook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;import java.util.Optional;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
 import java.util.ArrayList;
 
@@ -45,12 +37,14 @@ public class GlobalBookDuplicateService {
     private final GAuthorService authorService;
     private final GGenreService genreService;
     private final GCharacterService characterService;
+    private final GlobalBookService bookService;
 
     @Autowired
     public GlobalBookDuplicateService(FirstRepository firstRepo, SecondRepository secondRepo, ThirdRepository thirdRepo,
                                       GlobalAuthorRepository authorRepo, GlobalBookRepository bookRepo,
                                       GlobalCharacterRepository characterRepo, GlobalGenreRepository genreRepo,
-                                      GAuthorService authorService, GGenreService genreService, GCharacterService characterService) {
+                                      GAuthorService authorService, GGenreService genreService, GCharacterService characterService,
+                                      GlobalBookService bookService) {
         this.firstRepo = firstRepo;
         this.secondRepo = secondRepo;
         this.thirdRepo = thirdRepo;
@@ -61,146 +55,105 @@ public class GlobalBookDuplicateService {
         this.authorService = authorService;
         this.genreService = genreService;
         this.characterService = characterService;
+        this.bookService = bookService;
     }
 
     public void setUpGlobalSchema() {
-        insertFirstSource();
-
-        insertSecondSource();
-
-        inserThirdSource();
-
-        mergeDuplicates();
-    }
-
-    public void mergeDuplicates(){
-        
-    }
-
-    public void insertFirstSource(){
-        List<EGlobalBook> books =
+        List<EGlobalBook> firstSource =
                 StreamSupport.stream(firstRepo.findAll().spliterator(), false)
-                .map(this::firstBookToEGlobalBook)
-                .collect(Collectors.toList()
-                );
-
-        for (EGlobalBook book : books) {
-            Optional<EGlobalBook> globalBook13 = bookRepo.findByIsbn13(book.getIsbn13());
-            EGlobalBook globalBook10 = bookRepo.findByIsbn10(book.getIsbn13()).orElse(null);
-            EGlobalBook globalBook = globalBook13.orElse(globalBook10);
-            if (globalBook == null){
-                bookRepo.save(book);
-            }
-            else {
-                if (isNullOrEmpty(book.getIsbn13())) globalBook.setIsbn13(book.getIsbn13());
-                if (isNullOrEmpty(book.getEuroPrice())) globalBook.setEuroPrice(book.getEuroPrice());
-                if (isNullOrEmpty(book.getEuroDiscount())) globalBook.setEuroDiscount(book.getEuroDiscount());
-                if (isNullOrEmpty(book.getType())) globalBook.setType(book.getType());
-                if (isNullOrEmpty(book.getLinkBookPage())) globalBook.setLinkBookPage(book.getLinkBookPage());
-                if (isNullOrEmpty(book.getTitle())) globalBook.setTitle(book.getTitle());
-                if (isNullOrEmpty(book.getSubtitle())) globalBook.setSubtitle(book.getSubtitle());
-                globalBook.getAuthors().addAll(book.getAuthors());
-                if (isNullOrEmpty(book.getPublisher())) globalBook.setPublisher(book.getPublisher());
-                if (isNullOrEmpty(book.getPublishedCountry())) globalBook.setPublishedCountry(book.getPublishedCountry());
-                if (isNullOrEmpty(book.getLanguage())) globalBook.setLanguage(book.getLanguage());
-                if (isNullOrEmpty(book.getHeight())) globalBook.setHeight(book.getHeight());
-                if (isNullOrEmpty(book.getWidth())) globalBook.setWidth(book.getWidth());
-                if (isNullOrEmpty(book.getSpine())) globalBook.setSpine(book.getSpine());
-                if (isNullOrEmpty(book.getWeight())) globalBook.setWeight(book.getWeight());
-                if (isNullOrEmpty(book.getShortDescription())) globalBook.setShortDescription(book.getShortDescription());
-                if (isNullOrEmpty(book.getLongDescription())) globalBook.setLongDescription(book.getLongDescription());
-                if (isNullOrEmpty(book.getReview())) globalBook.setReview(book.getReview());
-
-
-            }
-        }
-    }
-    public void insertSecondSource() {
-        List<EGlobalBook> books =
+                        .map(this::firstBookToEGlobalBook)
+                        .collect(Collectors.toList()
+                        );
+        List<EGlobalBook> secondSource =
                 StreamSupport.stream(secondRepo.findAll().spliterator(), false)
-                .map(this::secondBookToEGlobalBook)
-                .collect(Collectors.toList()
-                );
-        for (EGlobalBook book : books) {
-            Optional<EGlobalBook> globalBook13 = bookRepo.findByIsbn13(book.getIsbn13());
-            EGlobalBook globalBook10 = bookRepo.findByIsbn10(book.getIsbn13()).orElse(null);
-            EGlobalBook globalBook = globalBook13.orElse(globalBook10);
-            if (globalBook == null){
-                bookRepo.save(book);
-            }
-            else {
-                if (isNullOrEmpty(book.getIsbn10())) globalBook.setIsbn10(book.getIsbn10());
-                if (isNullOrEmpty(book.getIsbn13())) globalBook.setIsbn13(book.getIsbn13());
-                globalBook.getAuthors().addAll(book.getAuthors());
-                if (isNullOrEmpty(book.getPublication_date())) globalBook.setPublication_date(book.getPublication_date());
-                if (isNullOrEmpty(book.getOriginalTitle())) globalBook.setOriginalTitle(book.getOriginalTitle());
-                if (isNullOrEmpty(book.getTitle())) globalBook.setTitle(book.getTitle());
-                if (isNullOrEmpty(book.getAverageRating())) globalBook.setAverageRating(book.getAverageRating());
-                if (isNullOrEmpty(book.getImageUrl())) globalBook.setImageUrl(book.getImageUrl());
-                if (isNullOrEmpty(book.getSmallImageUrl())) globalBook.setSmallImageUrl(book.getSmallImageUrl());
-            }
-        }
-    }
-
-    public void inserThirdSource(){
-        List<EGlobalBook> books =
+                        .map(this::secondBookToEGlobalBook)
+                        .collect(Collectors.toList()
+                        );
+        List<EGlobalBook> thirdSource =
                 StreamSupport.stream(thirdRepo.findAll().spliterator(), false)
                         .map(this::thirdBookToEGlobalBook)
                         .collect(Collectors.toList()
-        );
+                        );
 
+        inserSource(firstSource);
+        inserSource(secondSource);
+        inserSource(thirdSource);
+
+        mergeBookDuplicates();
+    }
+
+    public void mergeBookDuplicates() {
+        // keys by title, original title, title+subtitle, original title + subtitle
+        // values by book id
+        //merge ones with the same key
+
+    }
+
+    public void inserSource(List<EGlobalBook> books) {
         for (EGlobalBook book : books) {
             Optional<EGlobalBook> globalBook13 = bookRepo.findByIsbn13(book.getIsbn13());
             EGlobalBook globalBook10 = bookRepo.findByIsbn10(book.getIsbn13()).orElse(null);
             EGlobalBook globalBook = globalBook13.orElse(globalBook10);
-            if (globalBook == null){
+            if (globalBook == null) {
                 bookRepo.save(book);
             } else {
-                if (isNullOrEmpty(globalBook.getTitle())) {
-                    globalBook.setTitle(book.getTitle());
-                }
-                globalBook.getAuthors().addAll(book.getAuthors());
-                if (isNullOrEmpty(globalBook.getSeries())) {
-                    globalBook.setSeries(book.getSeries());
-                }
-                if (isNullOrEmpty(globalBook.getLongDescription())) {
-                    globalBook.setLongDescription(book.getLongDescription());
-                }
-                globalBook.getGenres().addAll(book.getGenres());
-                globalBook.getAuthors().addAll(book.getAuthors());
-                globalBook.getCharacters().addAll(book.getCharacters());
-                if (isNullOrEmpty(globalBook.getPlaces())) {
-                    globalBook.setPlaces(book.getPlaces());
-                } else {
-                    globalBook.setPlaces(globalBook.getPlaces() + ", "+book.getPlaces());
-                }
-                if (isNullOrEmpty(globalBook.getIsbn13())) {
-                    globalBook.setIsbn13(book.getIsbn13());
-                }
-                if (isNullOrEmpty(globalBook.getIsbn10())) {
-                    globalBook.setIsbn10(book.getIsbn10());
-                }
-                if (isNullOrEmpty(globalBook.getLanguage())) {
-                    globalBook.setLanguage(book.getLanguage());
-                }
-                if (globalBook.getPublication_date() == null) {
-                    globalBook.setPublication_date(book.getPublication_date());
-                }
-                if (globalBook.getAverageRating() == null) {
-                    globalBook.setAverageRating(book.getAverageRating());
-                }
+                mergeBooks(globalBook, book);
             }
         }
     }
 
-    private boolean isNullOrEmpty(String string){
+    //merges copy into the original
+    private void mergeBooks(EGlobalBook original, EGlobalBook copy) {
+        if (isNullOrEmpty(copy.getIsbn13())) original.setIsbn13(copy.getIsbn13());
+        if (isNullOrEmpty(copy.getIsbn10())) original.setIsbn10(copy.getIsbn10());
+        if (copy.getEuroPrice() == null) original.setEuroPrice(copy.getEuroPrice());
+        if (copy.getEuroDiscount() == null) original.setEuroDiscount(copy.getEuroDiscount());
+        if (isNullOrEmpty(copy.getType())) original.setType(copy.getType());
+        if (isNullOrEmpty(copy.getLinkBookPage())) original.setLinkBookPage(copy.getLinkBookPage());
+        if (isNullOrEmpty(copy.getTitle())) original.setTitle(copy.getTitle());
+        if (isNullOrEmpty(copy.getSubtitle())) original.setSubtitle(copy.getSubtitle());
+        if (isNullOrEmpty(copy.getPublisher())) original.setPublisher(copy.getPublisher());
+        if (isNullOrEmpty(copy.getPublishedCountry())) original.setPublishedCountry(copy.getPublishedCountry());
+        if (isNullOrEmpty(copy.getLanguage())) original.setLanguage(copy.getLanguage());
+        if (copy.getHeight() == null) original.setHeight(copy.getHeight());
+        if (copy.getWidth() == null) original.setWidth(copy.getWidth());
+        if (copy.getSpine() == null) original.setSpine(copy.getSpine());
+        if (copy.getWeight() == null) original.setWeight(copy.getWeight());
+        if (isNullOrEmpty(copy.getShortDescription())) original.setShortDescription(copy.getShortDescription());
+        if (isNullOrEmpty(copy.getLongDescription())) original.setLongDescription(copy.getLongDescription());
+        if (isNullOrEmpty(copy.getReview())) original.setReview(copy.getReview());
+        if (copy.getPublication_date() == null) original.setPublication_date(copy.getPublication_date());
+        if (isNullOrEmpty(copy.getOriginalTitle())) original.setOriginalTitle(copy.getOriginalTitle());
+        if (copy.getAverageRating() == null) original.setAverageRating(copy.getAverageRating());
+        if (isNullOrEmpty(copy.getImageUrl())) original.setImageUrl(copy.getImageUrl());
+        if (isNullOrEmpty(copy.getSmallImageUrl())) original.setSmallImageUrl(copy.getSmallImageUrl());
+        if (isNullOrEmpty(original.getSeries())) {
+            original.setSeries(copy.getSeries());
+        }
+
+
+        // todo check places for dublicates
+        if (isNullOrEmpty(original.getPlaces())) {
+            original.setPlaces(copy.getPlaces());
+        } else {
+            original.setPlaces(original.getPlaces() + ", " + copy.getPlaces());
+        }
+
+        bookRepo.save(original);
+        for (EGlobalAuthor author: copy.getAuthors()){
+            bookService.addAuthor(original, author);
+        }
+        for (EGlobalGenre genre: original.getGenres()){
+            bookService.addGenre(original, genre);
+        }
+        for (EGlobalCharacter character: original.getCharacters()){
+            bookService.addCharacter(original, character);
+        }
+    }
+
+
+    private boolean isNullOrEmpty(String string) {
         return string == null || string.isEmpty();
-    }
-    private boolean isNullOrEmpty(Integer number){
-        return number.equals(null);
-    }
-    private boolean isNullOrEmpty(Double number){
-        return number.equals(null);
     }
 
     public EGlobalBook firstBookToEGlobalBook(EBookFirst firstBook) {

@@ -17,5 +17,4 @@ public interface GlobalBookRepository extends CrudRepository<EGlobalBook, Long> 
     Optional<EGlobalBook> findByIsbn10(String isbn10);
 
     Optional<EGlobalBook> findByIsbn13(String isbn13);
-    
 }
