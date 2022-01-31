@@ -17,12 +17,9 @@ import main.database.repository.ThirdRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import java.util.ArrayList;
 
 
 @Service
@@ -75,9 +72,9 @@ public class GlobalBookDuplicateService {
                         .collect(Collectors.toList()
                         );
 
-        inserSource(firstSource);
-        inserSource(secondSource);
-        inserSource(thirdSource);
+        insertSource(firstSource);
+        insertSource(secondSource);
+        insertSource(thirdSource);
 
         mergeBookDuplicates();
     }
@@ -86,10 +83,48 @@ public class GlobalBookDuplicateService {
         // keys by title, original title, title+subtitle, original title + subtitle
         // values by book id
         //merge ones with the same key
+        List<EGlobalBook> allBooks = (List<EGlobalBook>) bookRepo.findAll();
+        Map<String, EGlobalBook> allBookKeys = new HashMap<>();
+        for (EGlobalBook book : allBooks) {
+            List<String> keys = constructKeys(book);
+            for (String key : keys) {
+                if (allBookKeys.containsKey(key)) {
+                    mergeBooks(allBookKeys.get(key), book);
+                } else {
+                    allBookKeys.put(key, book);
+                }
+            }
+        }
+    }
+
+    private List<String> constructKeys(EGlobalBook book) {
+        ArrayList<String> keys = new ArrayList<>();
+        keys.add(stringToKey(book.getTitle()));
+        keys.add(stringToKey(book.getOriginalTitle()));
+        keys.add(stringToKey(book.getTitle() + book.getSubtitle()));
+        keys.add(stringToKey(book.getOriginalTitle() + book.getSubtitle()));
+        return keys;
+    }
+
+    private String stringToKey(String line) {
+        // "Book title 12 subtitle" -> "BKTTL12SBTTL"
+        // "1984" -> "1984"
+        return line.toUpperCase().replaceAll("[^A-Z0-9]", "");
+    }
+
+    public void mergeAuthorDuplicates() {
 
     }
 
-    public void inserSource(List<EGlobalBook> books) {
+    public void mergeCharacterDuplicates() {
+
+    }
+
+    public void mergePlaceDuplicates() {
+        // ???
+    }
+
+    public void insertSource(List<EGlobalBook> books) {
         for (EGlobalBook book : books) {
             Optional<EGlobalBook> globalBook13 = bookRepo.findByIsbn13(book.getIsbn13());
             EGlobalBook globalBook10 = bookRepo.findByIsbn10(book.getIsbn13()).orElse(null);
@@ -132,7 +167,7 @@ public class GlobalBookDuplicateService {
         }
 
 
-        // todo check places for dublicates
+        // todo check places for dublicates maybe create a table?
         if (isNullOrEmpty(original.getPlaces())) {
             original.setPlaces(copy.getPlaces());
         } else {
@@ -140,13 +175,13 @@ public class GlobalBookDuplicateService {
         }
 
         bookRepo.save(original);
-        for (EGlobalAuthor author: copy.getAuthors()){
+        for (EGlobalAuthor author : copy.getAuthors()) {
             bookService.addAuthor(original, author);
         }
-        for (EGlobalGenre genre: original.getGenres()){
+        for (EGlobalGenre genre : original.getGenres()) {
             bookService.addGenre(original, genre);
         }
-        for (EGlobalCharacter character: original.getCharacters()){
+        for (EGlobalCharacter character : original.getCharacters()) {
             bookService.addCharacter(original, character);
         }
     }
