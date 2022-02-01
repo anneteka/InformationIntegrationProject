@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.*;
 
 @Service
 public class GAuthorService {
@@ -25,7 +26,28 @@ public class GAuthorService {
         return repository.findByName(name).orElse(null);
     }
 
+    public List<EGlobalAuthor> findAll(){
+        return (List<EGlobalAuthor>) repository.findAll();
+    }
+
     public void mergeAuthors(EGlobalAuthor keep, EGlobalAuthor discard){
-        // placeholder
+        String[] names1 = keep.getName().split(" ");
+        String[] names2 = discard.getName().split(" ");
+
+        int minMatches = Math.min(Math.min(names1.length, names2.length), 2); // at least 2 matching name parts or one if only one name given
+
+        int matches = 0;
+
+        for (String name1: names1){
+            for (String name2: names2){
+                if (name1.equals(name2)) matches++;
+            }
+        }
+
+        if (matches < minMatches){
+            // not enough matches, not the same author
+        }else{
+            // enough matches, discard second author
+        }
     }
 }

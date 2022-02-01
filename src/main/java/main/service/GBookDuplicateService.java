@@ -105,7 +105,8 @@ public class GBookDuplicateService {
     }
 
     public void mergeAuthorDuplicates() {
-
+        List<EGlobalAuthor> allAuthors = authorService.findAll();
+        // check all author combinations here?
     }
 
     public void mergeCharacterDuplicates() {
