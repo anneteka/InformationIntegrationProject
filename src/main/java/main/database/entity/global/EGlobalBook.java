@@ -78,8 +78,6 @@ public class EGlobalBook extends EBook {
     private String smallImageUrl;
     @Column(name = "series")
     private String series;
-    @Column(name = "places")
-    private String places;
     @Column(name = "awards", columnDefinition = "text")
     private String awards;
     @Column(name = "source")
@@ -91,6 +89,8 @@ public class EGlobalBook extends EBook {
     private List<EGlobalGenre> genres;
     @ManyToMany(fetch = FetchType.LAZY)
     private List<EGlobalAuthor> authors;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<EGlobalPlace> places;
 
 
     public EGlobalBook(
@@ -101,7 +101,7 @@ public class EGlobalBook extends EBook {
             Double height, Double width, Double spine, Double weight,
             String shortDescription, String longDescription, String review,
             Double averageRating, String imageUrl, String smallImageUrl, String series,
-            String places, String awards, ArrayList<EGlobalCharacter> characters,
+            String awards, ArrayList<EGlobalPlace> places, ArrayList<EGlobalCharacter> characters,
             ArrayList<EGlobalGenre> genres, ArrayList<EGlobalAuthor> authors, String source
     ) {
         this.isbn13 = isbn13;
@@ -144,7 +144,7 @@ public class EGlobalBook extends EBook {
                        String language, Integer numPages, Double height, Double width, Double spine,
                        Double weight, String shortDescription, String longDescription,
                        String review, Double averageRating, String imageUrl, String smallImageUrl,
-                       String series, String places, String awards, String source) {
+                       String series, String awards, String source) {
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;
         this.publication_date = publication_date;
@@ -171,11 +171,11 @@ public class EGlobalBook extends EBook {
         this.imageUrl = imageUrl;
         this.smallImageUrl = smallImageUrl;
         this.series = series;
-        this.places = places;
         this.awards = awards;
         this.source = source;
         this.characters = new ArrayList<>();
         this.authors = new ArrayList<>();
         this.genres = new ArrayList<>();
+        this.places = new ArrayList<>();
     }
 }

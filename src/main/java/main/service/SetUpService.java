@@ -1,8 +1,8 @@
 package main.service;
 
-import main.database.repository.FirstRepository;
-import main.database.repository.SecondRepository;
-import main.database.repository.ThirdRepository;
+import main.database.repository.source.FirstRepository;
+import main.database.repository.source.SecondRepository;
+import main.database.repository.source.ThirdRepository;
 import main.util.CsvParserUtil;
 import main.util.cvs.model.BlackwellBook;
 import main.util.cvs.model.CsvSecondBook;
@@ -66,8 +66,6 @@ public class SetUpService {
         setUpFromSecondSource();
         setUpFromThirdSource();
     }
-
-
 
     private void setUpFromFirstSource() {
     }

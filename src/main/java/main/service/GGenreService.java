@@ -1,7 +1,8 @@
 package main.service;
 
 import main.database.entity.global.EGlobalGenre;
-import main.database.repository.GlobalGenreRepository;
+import main.database.entity.global.EGlobalPlace;
+import main.database.repository.global.GGenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,16 +10,16 @@ import java.util.Optional;
 
 @Service
 public class GGenreService {
-    private final GlobalGenreRepository repository;
+    private final GGenreRepository repository;
 
     @Autowired
-    public GGenreService(GlobalGenreRepository repository) {
+    public GGenreService(GGenreRepository repository) {
         this.repository = repository;
     }
 
-    public EGlobalGenre saveGenre(String genre){
-        Optional<EGlobalGenre> existing = repository.findByName(genre);
-        return existing.orElseGet(() -> repository.save(new EGlobalGenre(genre)));
+    public EGlobalGenre saveGenre(String genreName){
+        Optional<EGlobalGenre> genre = repository.findByName(genreName);
+        return genre.orElseGet(() -> this.repository.save(new EGlobalGenre(genreName)));
     }
 
     public EGlobalGenre findGenreByName(String genreName){

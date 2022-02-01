@@ -1,19 +1,16 @@
 package main.service;
 
-import main.database.entity.global.EGlobalAuthor;
-import main.database.entity.global.EGlobalBook;
-import main.database.entity.global.EGlobalCharacter;
-import main.database.entity.global.EGlobalGenre;
+import main.database.entity.global.*;
 import main.database.entity.source.EBookFirst;
 import main.database.entity.source.EBookSecond;
 import main.database.entity.source.EBookThird;
-import main.database.repository.FirstRepository;
-import main.database.repository.GlobalAuthorRepository;
-import main.database.repository.GlobalBookRepository;
-import main.database.repository.GlobalCharacterRepository;
-import main.database.repository.GlobalGenreRepository;
-import main.database.repository.SecondRepository;
-import main.database.repository.ThirdRepository;
+import main.database.repository.source.FirstRepository;
+import main.database.repository.global.GAuthorRepository;
+import main.database.repository.global.GBookRepository;
+import main.database.repository.global.GCharacterRepository;
+import main.database.repository.global.GGenreRepository;
+import main.database.repository.source.SecondRepository;
+import main.database.repository.source.ThirdRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,36 +20,31 @@ import java.util.stream.StreamSupport;
 
 
 @Service
-public class GlobalBookDuplicateService {
-    private final GlobalAuthorRepository authorRepo;
-    private final GlobalBookRepository bookRepo;
-    private final GlobalCharacterRepository characterRepo;
-    private final GlobalGenreRepository genreRepo;
+public class GBookDuplicateService {
+    private final GBookRepository bookRepo;
     private final FirstRepository firstRepo;
     private final SecondRepository secondRepo;
     private final ThirdRepository thirdRepo;
     private final GAuthorService authorService;
     private final GGenreService genreService;
     private final GCharacterService characterService;
-    private final GlobalBookService bookService;
+    private final GBookService bookService;
+    private final GPlaceService placeService;
 
     @Autowired
-    public GlobalBookDuplicateService(FirstRepository firstRepo, SecondRepository secondRepo, ThirdRepository thirdRepo,
-                                      GlobalAuthorRepository authorRepo, GlobalBookRepository bookRepo,
-                                      GlobalCharacterRepository characterRepo, GlobalGenreRepository genreRepo,
-                                      GAuthorService authorService, GGenreService genreService, GCharacterService characterService,
-                                      GlobalBookService bookService) {
+    public GBookDuplicateService(FirstRepository firstRepo, SecondRepository secondRepo, ThirdRepository thirdRepo,
+                                 GBookRepository bookRepo, GAuthorService authorService,
+                                 GGenreService genreService, GCharacterService characterService,
+                                 GBookService bookService, GPlaceService placeService) {
         this.firstRepo = firstRepo;
         this.secondRepo = secondRepo;
         this.thirdRepo = thirdRepo;
-        this.authorRepo = authorRepo;
         this.bookRepo = bookRepo;
-        this.characterRepo = characterRepo;
-        this.genreRepo = genreRepo;
         this.authorService = authorService;
         this.genreService = genreService;
         this.characterService = characterService;
         this.bookService = bookService;
+        this.placeService = placeService;
     }
 
     public void setUpGlobalSchema() {
@@ -166,15 +158,10 @@ public class GlobalBookDuplicateService {
             original.setSeries(copy.getSeries());
         }
 
-
-        // todo check places for dublicates maybe create a table?
-        if (isNullOrEmpty(original.getPlaces())) {
-            original.setPlaces(copy.getPlaces());
-        } else {
-            original.setPlaces(original.getPlaces() + ", " + copy.getPlaces());
-        }
-
         bookRepo.save(original);
+        for (EGlobalPlace place : copy.getPlaces()) {
+            bookService.addPlace(original, place);
+        }
         for (EGlobalAuthor author : copy.getAuthors()) {
             bookService.addAuthor(original, author);
         }
@@ -252,7 +239,7 @@ public class GlobalBookDuplicateService {
         }
 
         // Save genre list
-        ArrayList<EGlobalGenre> genreSet = new ArrayList<EGlobalGenre>();
+        ArrayList<EGlobalGenre> genreSet = new ArrayList<>();
         String genreList = thirdBook.getAuthor();
         String genres[] = genreList.split(",");
 
@@ -261,16 +248,22 @@ public class GlobalBookDuplicateService {
         }
 
         // Save character list
-        ArrayList<EGlobalCharacter> characterSet = new ArrayList<EGlobalCharacter>();
+        ArrayList<EGlobalCharacter> characterSet = new ArrayList<>();
         String characterList = thirdBook.getAuthor();
-        String characters[] = characterList.split(",");
+        String[] characters = characterList.split(",");
 
         for (String character : characters) {
             characterSet.add(characterService.saveCharacter(character.trim()));
         }
 
+        ArrayList<EGlobalPlace> placeSet = new ArrayList<>();
+        String placeList = thirdBook.getPlaces();
+        String[] places = placeList.split(",");
+        for (String place: places){
+            placeSet.add(placeService.savePlace(place.trim()));
+        }
 
-        // last for characters of the string are year
+        // last 4 characters of the string are year
         String date = thirdBook.getFirstPublishDate();
         int year = -1;
         try {
@@ -286,7 +279,7 @@ public class GlobalBookDuplicateService {
                 null, null, null, null,
                 null, thirdBook.getDescription(), null,
                 thirdBook.getAvgRating(), null, null, thirdBook.getSeries(),
-                thirdBook.getPlaces(), thirdBook.getAwards(), new ArrayList<>(), new ArrayList<>(), authorSet, "source3");
+                thirdBook.getAwards(), new ArrayList<>(), characterSet, genreSet, authorSet, "source3");
     }
 
 }

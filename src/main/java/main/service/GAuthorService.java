@@ -1,9 +1,7 @@
 package main.service;
 
 import main.database.entity.global.EGlobalAuthor;
-import main.database.entity.global.EGlobalGenre;
-import main.database.repository.GlobalAuthorRepository;
-import main.database.repository.GlobalGenreRepository;
+import main.database.repository.global.GAuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +9,10 @@ import java.util.Optional;
 
 @Service
 public class GAuthorService {
-    private final GlobalAuthorRepository repository;
+    private final GAuthorRepository repository;
 
     @Autowired
-    public GAuthorService(GlobalAuthorRepository repository) {
+    public GAuthorService(GAuthorRepository repository) {
         this.repository = repository;
     }
 

@@ -1,29 +1,29 @@
 package main.service;
 
-import main.database.entity.global.EGlobalAuthor;
-import main.database.entity.global.EGlobalBook;
-import main.database.entity.global.EGlobalCharacter;
-import main.database.entity.global.EGlobalGenre;
-import main.database.repository.GlobalBookRepository;
+import main.database.entity.global.*;
+import main.database.repository.global.GBookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GlobalBookService {
-    private final GlobalBookRepository bookRepository;
+public class GBookService {
+    private final GBookRepository bookRepository;
     private final GAuthorService authorService;
     private final GGenreService genreService;
     private final GCharacterService characterService;
+    private final GPlaceService placeService;
 
     @Autowired
-    public GlobalBookService(
-            GlobalBookRepository bookRepository, GAuthorService authorService,
-            GGenreService genreService, GCharacterService characterService
+    public GBookService(
+            GBookRepository bookRepository, GAuthorService authorService,
+            GGenreService genreService, GCharacterService characterService,
+            GPlaceService placeService
     ) {
         this.bookRepository = bookRepository;
         this.authorService = authorService;
         this.genreService = genreService;
         this.characterService = characterService;
+        this.placeService = placeService;
     }
 
     public void addAuthor(EGlobalBook book, EGlobalAuthor author) {
@@ -83,6 +83,26 @@ public class GlobalBookService {
 
     public void removeGenre(EGlobalBook book, EGlobalGenre genre) {
         book.getGenres().remove(genre);
+        bookRepository.save(book);
+    }
+
+    public void addPlace(EGlobalBook book, String placeName) {
+        EGlobalPlace place = placeService.savePlace(placeName);
+        if (!book.getPlaces().contains(place)) {
+            book.getPlaces().add(place);
+            bookRepository.save(book);
+        }
+    }
+
+    public void addPlace(EGlobalBook book, EGlobalPlace place) {
+        if (!book.getPlaces().contains(place)) {
+            book.getPlaces().add(place);
+            bookRepository.save(book);
+        }
+    }
+
+    public void removePlace(EGlobalBook book, EGlobalPlace place) {
+        book.getPlaces().remove(place);
         bookRepository.save(book);
     }
 }

@@ -1,21 +1,25 @@
 package main.service;
 
 import main.database.entity.global.EGlobalCharacter;
-import main.database.repository.GlobalCharacterRepository;
+import main.database.entity.global.EGlobalGenre;
+import main.database.repository.global.GCharacterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class GCharacterService {
-    private final GlobalCharacterRepository repository;
+    private final GCharacterRepository repository;
 
     @Autowired
-    public GCharacterService(GlobalCharacterRepository repository) {
+    public GCharacterService(GCharacterRepository repository) {
         this.repository = repository;
     }
 
     public EGlobalCharacter saveCharacter(String name){
-        return this.repository.save(new EGlobalCharacter(name));
+        Optional<EGlobalCharacter> character = repository.findByName(name);
+        return character.orElseGet(() -> this.repository.save(new EGlobalCharacter(name)));
     }
 
     public EGlobalCharacter findCharacterByName(String name){

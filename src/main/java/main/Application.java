@@ -1,6 +1,6 @@
 package main;
 
-import main.service.GlobalBookDuplicateService;
+import main.service.GBookDuplicateService;
 import main.service.SetUpService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +18,7 @@ public class Application {
         // you only need to run it once and only need one of them
         //context.getBean(BookService.class).setUpFromSources();
         context.getBean(SetUpService.class).setUpTestSources();
-        context.getBean(GlobalBookDuplicateService.class).setUpGlobalSchema();
+        context.getBean(GBookDuplicateService.class).setUpGlobalSchema();
     }
 
 }

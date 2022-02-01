@@ -1,4 +1,4 @@
-package main.database.repository;
+package main.database.repository.source;
 
 import main.database.entity.source.EBookSecond;
 import org.springframework.data.repository.CrudRepository;
