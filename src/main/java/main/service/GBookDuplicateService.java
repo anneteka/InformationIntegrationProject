@@ -5,14 +5,14 @@ import main.database.entity.source.EBookFirst;
 import main.database.entity.source.EBookSecond;
 import main.database.entity.source.EBookThird;
 import main.database.repository.source.FirstRepository;
-import main.database.repository.global.GAuthorRepository;
 import main.database.repository.global.GBookRepository;
-import main.database.repository.global.GCharacterRepository;
-import main.database.repository.global.GGenreRepository;
 import main.database.repository.source.SecondRepository;
 import main.database.repository.source.ThirdRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +30,7 @@ public class GBookDuplicateService {
     private final GCharacterService characterService;
     private final GBookService bookService;
     private final GPlaceService placeService;
+    private static final Logger LOG = LogManager.getFormatterLogger("GBookDuplicateService");
 
     @Autowired
     public GBookDuplicateService(FirstRepository firstRepo, SecondRepository secondRepo, ThirdRepository thirdRepo,
@@ -47,6 +48,7 @@ public class GBookDuplicateService {
         this.placeService = placeService;
     }
 
+    @Transactional
     public void setUpGlobalSchema() {
         List<EGlobalBook> firstSource =
                 StreamSupport.stream(firstRepo.findAll().spliterator(), false)
@@ -69,6 +71,7 @@ public class GBookDuplicateService {
         insertSource(thirdSource);
 
         mergeBookDuplicates();
+        System.out.println("done");
     }
 
     public void mergeBookDuplicates() {
@@ -81,6 +84,7 @@ public class GBookDuplicateService {
             List<String> keys = constructKeys(book);
             for (String key : keys) {
                 if (allBookKeys.containsKey(key)) {
+                    LOG.info("merging key" + key.toString()+"\n"+allBookKeys.get(key)+"\n"+book.toString()+"\n");
                     mergeBooks(allBookKeys.get(key), book);
                 } else {
                     allBookKeys.put(key, book);
@@ -90,18 +94,20 @@ public class GBookDuplicateService {
     }
 
     private List<String> constructKeys(EGlobalBook book) {
-        ArrayList<String> keys = new ArrayList<>();
-        keys.add(stringToKey(book.getTitle()));
-        keys.add(stringToKey(book.getOriginalTitle()));
-        keys.add(stringToKey(book.getTitle() + book.getSubtitle()));
-        keys.add(stringToKey(book.getOriginalTitle() + book.getSubtitle()));
-        return keys;
+        HashSet<String> keys = new HashSet<>();
+        keys.add(stringToKey(book.getTitle()==null?"":book.getTitle()));
+        keys.add(stringToKey(book.getOriginalTitle()==null?"":book.getOriginalTitle()));
+        keys.add(stringToKey(book.getTitle()==null?"":book.getTitle() + (book.getSubtitle()==null?"":book.getSubtitle())));
+        keys.add(stringToKey(book.getOriginalTitle()==null?"":book.getOriginalTitle() + (book.getSubtitle()==null?"":book.getSubtitle())));
+        keys.remove("");
+        return keys.stream().toList();
     }
 
     private String stringToKey(String line) {
         // "Book title 12 subtitle" -> "BKTTL12SBTTL"
         // "1984" -> "1984"
-        return line.toUpperCase().replaceAll("[^A-Z0-9]", "");
+        if (isNullOrEmpty(line)||line.equals("null")) return "";
+        return line.toUpperCase().replaceAll("[^QWRTPSDFGHJKLZXCVBNM0-9]", "");
     }
 
     public void mergeAuthorDuplicates() {
@@ -118,13 +124,21 @@ public class GBookDuplicateService {
 
     public void insertSource(List<EGlobalBook> books) {
         for (EGlobalBook book : books) {
-            Optional<EGlobalBook> globalBook13 = bookRepo.findByIsbn13(book.getIsbn13());
-            EGlobalBook globalBook10 = bookRepo.findByIsbn10(book.getIsbn13()).orElse(null);
-            EGlobalBook globalBook = globalBook13.orElse(globalBook10);
-            if (globalBook == null) {
+            Optional<EGlobalBook> globalBook13 = bookService.findByIsbn13(book.getIsbn13());
+            Optional<EGlobalBook> globalBook10 = bookService.findByIsbn10(book.getIsbn13());
+            if (!globalBook13.isPresent() && !globalBook10.isPresent()) {
                 bookRepo.save(book);
+            } else if (!globalBook13.isPresent()){
+                LOG.info("merging by isbn10\n" + globalBook10.get().toString()+"\n"+book.toString()+"\n");
+                mergeBooks(globalBook10.get(), book);
+            } else if (!globalBook10.isPresent()){
+                LOG.info("merging by isbn13\n" + globalBook13.get().toString()+"\n"+book.toString()+"\n");
+                mergeBooks(globalBook13.get(), book);
             } else {
-                mergeBooks(globalBook, book);
+                LOG.info("merging by isbn13\n" + globalBook13.get().toString()+"\n"+book.toString());
+                mergeBooks(globalBook13.get(),book);
+                LOG.info("merging by isbn10\n" + globalBook13.get().toString()+"\n"+globalBook13.get().toString()+"\n");
+                mergeBooks(globalBook13.get(), globalBook10.get());
             }
         }
     }
@@ -157,20 +171,25 @@ public class GBookDuplicateService {
         if (isNullOrEmpty(original.getSeries())) {
             original.setSeries(copy.getSeries());
         }
+        try {
 
-        bookRepo.save(original);
-        for (EGlobalPlace place : copy.getPlaces()) {
-            bookService.addPlace(original, place);
+            bookRepo.save(original);
+            for (EGlobalPlace place : copy.getPlaces()) {
+                bookService.addPlace(original, place);
+            }
+            for (EGlobalAuthor author : copy.getAuthors()) {
+                bookService.addAuthor(original, author);
+            }
+            for (EGlobalGenre genre : original.getGenres()) {
+                bookService.addGenre(original, genre);
+            }
+            for (EGlobalCharacter character : original.getCharacters()) {
+                bookService.addCharacter(original, character);
+            }
+        } catch (Exception e){
+            LOG.info("Tried to merge with deleted entity");
         }
-        for (EGlobalAuthor author : copy.getAuthors()) {
-            bookService.addAuthor(original, author);
-        }
-        for (EGlobalGenre genre : original.getGenres()) {
-            bookService.addGenre(original, genre);
-        }
-        for (EGlobalCharacter character : original.getCharacters()) {
-            bookService.addCharacter(original, character);
-        }
+        bookRepo.delete(copy);
     }
 
 
@@ -202,12 +221,12 @@ public class GBookDuplicateService {
                 firstBook.getPublished_country(), firstBook.getLanguage(), null, firstBook.getHeight(),
                 firstBook.getWidth(), firstBook.getSpine(), firstBook.getWeight(), firstBook.getShortBlurb(),
                 firstBook.getLongBlurb(),
-                firstBook.getBlurbReview(), null, null, null, null, null, null,
+                firstBook.getBlurbReview(), null, null, null, null, null, new ArrayList<>(),
                 new ArrayList<>(), new ArrayList<>(), authorSet, "blackwell");
     }
 
     public EGlobalBook secondBookToEGlobalBook(EBookSecond secondBook) {
-        ArrayList<EGlobalAuthor> authorSet = new ArrayList<EGlobalAuthor>();
+        ArrayList<EGlobalAuthor> authorSet = new ArrayList<>();
 
         String authorList = secondBook.getAuthors();
         String authors[] = authorList.split(",");
@@ -225,7 +244,7 @@ public class GBookDuplicateService {
                 null, null, null, null,
                 null, null, null,
                 secondBook.getAverageRating(), secondBook.getImageUrl(), secondBook.getSmallImageUrl(), null,
-                null, null, new ArrayList<>(), new ArrayList<>(), authorSet, "source2");
+                null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), authorSet, "source2");
     }
 
     public EGlobalBook thirdBookToEGlobalBook(EBookThird thirdBook) {

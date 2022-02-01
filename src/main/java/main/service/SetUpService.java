@@ -7,6 +7,8 @@ import main.util.CsvParserUtil;
 import main.util.cvs.model.BlackwellBook;
 import main.util.cvs.model.CsvSecondBook;
 import main.util.cvs.model.CsvThirdBook;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +19,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class SetUpService {
-    private FirstRepository firstRepo;
-    private SecondRepository secondRepo;
-    private ThirdRepository thirdRepo;
+    private final FirstRepository firstRepo;
+    private final SecondRepository secondRepo;
+    private final ThirdRepository thirdRepo;
+    private static final Logger LOG = LogManager.getFormatterLogger("SetUpService");
 
     @Autowired
     public SetUpService(FirstRepository firstRepo, SecondRepository secondRepo, ThirdRepository thirdRepo) {
