@@ -2,8 +2,12 @@ package main.service;
 
 import main.database.entity.global.*;
 import main.database.repository.global.GBookRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class GBookService {
@@ -12,6 +16,7 @@ public class GBookService {
     private final GGenreService genreService;
     private final GCharacterService characterService;
     private final GPlaceService placeService;
+    private static final Logger LOG = LogManager.getFormatterLogger("GBookService");
 
     @Autowired
     public GBookService(
@@ -104,5 +109,17 @@ public class GBookService {
     public void removePlace(EGlobalBook book, EGlobalPlace place) {
         book.getPlaces().remove(place);
         bookRepository.save(book);
+    }
+
+    public Optional<EGlobalBook> findByIsbn13(String isbn13) {
+        if (isbn13 == null||isbn13.isEmpty()) {
+            return Optional.empty();
+        } else return bookRepository.findByIsbn13(isbn13);
+    }
+
+    public Optional<EGlobalBook> findByIsbn10(String isbn10) {
+        if (isbn10 == null||isbn10.isEmpty()) {
+            return Optional.empty();
+        } else return bookRepository.findByIsbn10(isbn10);
     }
 }
