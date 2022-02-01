@@ -50,6 +50,7 @@ public class GBookDuplicateService {
 
     @Transactional
     public void setUpGlobalSchema() {
+        
         List<EGlobalBook> firstSource =
                 StreamSupport.stream(firstRepo.findAll().spliterator(), false)
                         .map(this::firstBookToEGlobalBook)
@@ -70,8 +71,13 @@ public class GBookDuplicateService {
         insertSource(secondSource);
         insertSource(thirdSource);
 
-        mergeBookDuplicates();
-        cleanEmptyBooks();
+        
+        //mergeBookDuplicates();
+        //cleanEmptyBooks();
+        mergeAuthorDuplicates();
+        mergeCharacterDuplicates();
+        mergeGenreDuplicates();
+        mergePlaceDuplicates();
         System.out.println("done");
     }
 
@@ -90,7 +96,7 @@ public class GBookDuplicateService {
             List<String> keys = constructKeys(book);
             for (String key : keys) {
                 if (allBookKeys.containsKey(key)) {
-                    LOG.info("merging key" + key.toString()+"\n"+allBookKeys.get(key)+"\n"+book.toString()+"\n");
+                    //LOG.info("merging key" + key.toString()+"\n"+allBookKeys.get(key)+"\n"+book.toString()+"\n");
                     mergeBooks(allBookKeys.get(key), book);
                 } else {
                     allBookKeys.put(key, book);
@@ -117,16 +123,67 @@ public class GBookDuplicateService {
     }
 
     public void mergeAuthorDuplicates() {
+        System.out.println("Merging authors");
         List<EGlobalAuthor> allAuthors = authorService.findAll();
         // check all author combinations here?
+        int l = allAuthors.size();
+        for (int i = 0; i < l; i++){
+            var keep = allAuthors.get(i);
+            for (int j = i+1; j<l; j++){
+                var discard = allAuthors.get(j);
+                if (!keep.equals(discard)){
+                    authorService.mergeAuthors(keep, discard);
+                }
+            }
+        }
     }
 
     public void mergeCharacterDuplicates() {
+        System.out.println("Merging characters");
+        List<EGlobalCharacter> allCharacters = characterService.findAll();
+        // check all author combinations here?
+        int l = allCharacters.size();
+        for (int i = 0; i < l; i++){
+            var keep = allCharacters.get(i);
+            for (int j = i+1; j<l; j++){
+                var discard = allCharacters.get(j);
+                if (!keep.equals(discard)){
+                    characterService.mergeCharacters(keep, discard);
+                }
+            }
+        }
+    }
 
+    public void mergeGenreDuplicates() {
+        System.out.println("Merging genres");
+        List<EGlobalGenre> allGenres = genreService.findAll();
+        // check all author combinations here?
+        int l = allGenres.size();
+        for (int i = 0; i < l; i++){
+            var keep = allGenres.get(i);
+            for (int j = i+1; j<l; j++){
+                var discard = allGenres.get(j);
+                if (!keep.equals(discard)){
+                    genreService.mergeGenres(keep, discard);
+                }
+            }
+        }
     }
 
     public void mergePlaceDuplicates() {
-        // ???
+        System.out.println("Merging places");
+        List<EGlobalPlace> allPlaces = placeService.findAll();
+        // check all author combinations here?
+        int l = allPlaces.size();
+        for (int i = 0; i < l; i++){
+            var keep = allPlaces.get(i);
+            for (int j = i+1; j<l; j++){
+                var discard = allPlaces.get(j);
+                if (!keep.equals(discard)){
+                    placeService.mergePlaces(keep, discard);
+                }
+            }
+        }
     }
 
     public void insertSource(List<EGlobalBook> books) {
@@ -136,15 +193,15 @@ public class GBookDuplicateService {
             if (!globalBook13.isPresent() && !globalBook10.isPresent()) {
                 bookRepo.save(book);
             } else if (!globalBook13.isPresent()){
-                LOG.info("merging by isbn10\n" + globalBook10.get().toString()+"\n"+book.toString()+"\n");
+                //LOG.info("merging by isbn10\n" + globalBook10.get().toString()+"\n"+book.toString()+"\n");
                 mergeBooks(globalBook10.get(), book);
             } else if (!globalBook10.isPresent()){
-                LOG.info("merging by isbn13\n" + globalBook13.get().toString()+"\n"+book.toString()+"\n");
+                //LOG.info("merging by isbn13\n" + globalBook13.get().toString()+"\n"+book.toString()+"\n");
                 mergeBooks(globalBook13.get(), book);
             } else {
-                LOG.info("merging by isbn13\n" + globalBook13.get().toString()+"\n"+book.toString());
+                //LOG.info("merging by isbn13\n" + globalBook13.get().toString()+"\n"+book.toString());
                 mergeBooks(globalBook13.get(),book);
-                LOG.info("merging by isbn10\n" + globalBook13.get().toString()+"\n"+globalBook13.get().toString()+"\n");
+                //LOG.info("merging by isbn10\n" + globalBook13.get().toString()+"\n"+globalBook13.get().toString()+"\n");
                 mergeBooks(globalBook13.get(), globalBook10.get());
             }
         }
