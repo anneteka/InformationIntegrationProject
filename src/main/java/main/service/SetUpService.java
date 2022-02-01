@@ -37,24 +37,29 @@ public class SetUpService {
         CsvParserUtil<CsvThirdBook> thirdSourceParcer = new CsvParserUtil<>();
 
         List<BlackwellBook> parsedFirst = firstSourceParcer.parse(path1, BlackwellBook.class);
+        LOG.info("finished parsing first source");
         List<CsvSecondBook> parsedSecond = secondSourceParcer.parse(path2, CsvSecondBook.class);
+        LOG.info("finished parsing second source");
         List<CsvThirdBook> parsedThird = thirdSourceParcer.parse(path3, CsvThirdBook.class);
-
+        LOG.info("finished parsing sources");
         firstRepo.saveAll(
             parsedFirst.stream().
                 map(BlackwellBook::toEBook)
                 .collect(Collectors.toList())
         );
+        LOG.info("finished setting up first source");
         secondRepo.saveAll(
             parsedSecond.stream().
                 map(CsvSecondBook::toEBook)
                 .collect(Collectors.toList())
         );
+        LOG.info("finished setting up second source");
         thirdRepo.saveAll(
             parsedThird.stream().
                 map(CsvThirdBook::toEBook)
                 .collect(Collectors.toList())
         );
+        LOG.info("finished setting up third source");
     }
 
     public void setUpFromSources() throws FileNotFoundException {

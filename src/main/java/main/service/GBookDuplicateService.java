@@ -1,5 +1,6 @@
 package main.service;
 
+import main.database.entity.EBook;
 import main.database.entity.global.*;
 import main.database.entity.source.EBookFirst;
 import main.database.entity.source.EBookSecond;
@@ -50,35 +51,55 @@ public class GBookDuplicateService {
 
     @Transactional
     public void setUpGlobalSchema() {
-        
-        List<EGlobalBook> firstSource =
-                StreamSupport.stream(firstRepo.findAll().spliterator(), false)
-                        .map(this::firstBookToEGlobalBook)
-                        .collect(Collectors.toList()
-                        );
-        List<EGlobalBook> secondSource =
-                StreamSupport.stream(secondRepo.findAll().spliterator(), false)
-                        .map(this::secondBookToEGlobalBook)
-                        .collect(Collectors.toList()
-                        );
-        List<EGlobalBook> thirdSource =
-                StreamSupport.stream(thirdRepo.findAll().spliterator(), false)
-                        .map(this::thirdBookToEGlobalBook)
-                        .collect(Collectors.toList()
-                        );
+//        List<EGlobalBook> firstSource =
+//                StreamSupport.stream(firstRepo.findAll().spliterator(), false)
+//                        .map(this::firstBookToEGlobalBook)
+//                        .collect(Collectors.toList()
+//                        );
+        List<EBookFirst> firstSource = firstRepo.findAll();
+        for (EBookFirst book : firstSource) {
+            insertBook(firstBookToEGlobalBook(book));
+        }
+        LOG.info("finished inserting first source");
+        List<EBookSecond> secondSource = secondRepo.findAll();
+        for (EBookSecond book : secondSource) {
+            insertBook(secondBookToEGlobalBook(book));
+        }
+        LOG.info("finished inserting second source");
+        List<EBookThird> thirdSource = thirdRepo.findAll();
+        for (EBookThird book : thirdSource) {
+            insertBook(thirdBookToEGlobalBook(book));
+        }
+        LOG.info("finished inserting third source");
+//        List<EGlobalBook> secondSource =
+//                StreamSupport.stream(secondRepo.findAll().spliterator(), false)
+//                        .map(this::secondBookToEGlobalBook)
+//                        .collect(Collectors.toList()
+//                        );
+//        List<EGlobalBook> thirdSource =
+//                StreamSupport.stream(thirdRepo.findAll().spliterator(), false)
+//                        .map(this::thirdBookToEGlobalBook)
+//                        .collect(Collectors.toList()
+//                        );
 
-        insertSource(firstSource);
-        insertSource(secondSource);
-        insertSource(thirdSource);
+//        insertSource(firstSource);
+//        LOG.info("finished inserting first source");
+//        insertSource(secondSource);
+//        LOG.info("finished inserting second source");
+//        insertSource(thirdSource);
+//        LOG.info("finished inserting third source");
 
-        
-        //mergeBookDuplicates();
-        //cleanEmptyBooks();
+        mergeBookDuplicates();
+        LOG.info("finished merging duplicates");
+        cleanEmptyBooks();
+
         mergeAuthorDuplicates();
         mergeCharacterDuplicates();
         mergeGenreDuplicates();
         mergePlaceDuplicates();
         System.out.println("done");
+        LOG.info("DONE");
+
     }
 
     private void cleanEmptyBooks() {
@@ -96,7 +117,7 @@ public class GBookDuplicateService {
             List<String> keys = constructKeys(book);
             for (String key : keys) {
                 if (allBookKeys.containsKey(key)) {
-                    //LOG.info("merging key" + key.toString()+"\n"+allBookKeys.get(key)+"\n"+book.toString()+"\n");
+                    LOG.info("merging key" + key.toString() + "\n" + allBookKeys.get(key) + "\n" + book.toString() + "\n");
                     mergeBooks(allBookKeys.get(key), book);
                 } else {
                     allBookKeys.put(key, book);
@@ -107,10 +128,10 @@ public class GBookDuplicateService {
 
     private List<String> constructKeys(EGlobalBook book) {
         HashSet<String> keys = new HashSet<>();
-        keys.add(stringToKey(book.getTitle()==null?"":book.getTitle()));
-        keys.add(stringToKey(book.getOriginalTitle()==null?"":book.getOriginalTitle()));
-        keys.add(stringToKey(book.getTitle()==null?"":book.getTitle() + (book.getSubtitle()==null?"":book.getSubtitle())));
-        keys.add(stringToKey(book.getOriginalTitle()==null?"":book.getOriginalTitle() + (book.getSubtitle()==null?"":book.getSubtitle())));
+        keys.add(stringToKey(book.getTitle() == null ? "" : book.getTitle()));
+        keys.add(stringToKey(book.getOriginalTitle() == null ? "" : book.getOriginalTitle()));
+        keys.add(stringToKey(book.getTitle() == null ? "" : book.getTitle() + (book.getSubtitle() == null ? "" : book.getSubtitle())));
+        keys.add(stringToKey(book.getOriginalTitle() == null ? "" : book.getOriginalTitle() + (book.getSubtitle() == null ? "" : book.getSubtitle())));
         keys.remove("");
         return keys.stream().toList();
     }
@@ -118,7 +139,7 @@ public class GBookDuplicateService {
     private String stringToKey(String line) {
         // "Book title 12 subtitle" -> "BKTTL12SBTTL"
         // "1984" -> "1984"
-        if (isNullOrEmpty(line)||line.equals("null")) return "";
+        if (isNullOrEmpty(line) || line.equals("null")) return "";
         return line.toUpperCase().replaceAll("[^QWRTPSDFGHJKLZXCVBNM0-9]", "");
     }
 
@@ -186,25 +207,24 @@ public class GBookDuplicateService {
         }
     }
 
-    public void insertSource(List<EGlobalBook> books) {
-        for (EGlobalBook book : books) {
-            Optional<EGlobalBook> globalBook13 = bookService.findByIsbn13(book.getIsbn13());
-            Optional<EGlobalBook> globalBook10 = bookService.findByIsbn10(book.getIsbn13());
-            if (!globalBook13.isPresent() && !globalBook10.isPresent()) {
-                bookRepo.save(book);
-            } else if (!globalBook13.isPresent()){
-                //LOG.info("merging by isbn10\n" + globalBook10.get().toString()+"\n"+book.toString()+"\n");
-                mergeBooks(globalBook10.get(), book);
-            } else if (!globalBook10.isPresent()){
-                //LOG.info("merging by isbn13\n" + globalBook13.get().toString()+"\n"+book.toString()+"\n");
-                mergeBooks(globalBook13.get(), book);
-            } else {
-                //LOG.info("merging by isbn13\n" + globalBook13.get().toString()+"\n"+book.toString());
-                mergeBooks(globalBook13.get(),book);
-                //LOG.info("merging by isbn10\n" + globalBook13.get().toString()+"\n"+globalBook13.get().toString()+"\n");
-                mergeBooks(globalBook13.get(), globalBook10.get());
-            }
+    public void insertBook(EGlobalBook book) {
+        Optional<EGlobalBook> globalBook13 = bookService.findByIsbn13(book.getIsbn13());
+        Optional<EGlobalBook> globalBook10 = bookService.findByIsbn10(book.getIsbn13());
+        if (!globalBook13.isPresent() && !globalBook10.isPresent()) {
+            bookRepo.save(book);
+        } else if (!globalBook13.isPresent()) {
+            LOG.info("merging by isbn10\n" + globalBook10.get().toString() + "\n" + book.toString() + "\n");
+            mergeBooks(globalBook10.get(), book);
+        } else if (!globalBook10.isPresent()) {
+            LOG.info("merging by isbn13\n" + globalBook13.get().toString() + "\n" + book.toString() + "\n");
+            mergeBooks(globalBook13.get(), book);
+        } else {
+            LOG.info("merging by isbn13\n" + globalBook13.get().toString() + "\n" + book.toString());
+            mergeBooks(globalBook13.get(), book);
+            LOG.info("merging by isbn10\n" + globalBook13.get().toString() + "\n" + globalBook13.get().toString() + "\n");
+            mergeBooks(globalBook13.get(), globalBook10.get());
         }
+
     }
 
     //merges copy into the original
@@ -250,7 +270,7 @@ public class GBookDuplicateService {
             for (EGlobalCharacter character : original.getCharacters()) {
                 bookService.addCharacter(original, character);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -339,7 +359,7 @@ public class GBookDuplicateService {
         ArrayList<EGlobalPlace> placeSet = new ArrayList<>();
         String placeList = thirdBook.getPlaces();
         String[] places = placeList.split(",");
-        for (String place: places){
+        for (String place : places) {
             placeSet.add(placeService.savePlace(place.trim()));
         }
 
@@ -352,7 +372,7 @@ public class GBookDuplicateService {
             // TODO parser for dates like "Sep-96" "Mar-01"
         }
 
-        return new EGlobalBook(thirdBook.getIsbn13(), thirdBook.getIsbn(), ""+year, null,
+        return new EGlobalBook(thirdBook.getIsbn13(), thirdBook.getIsbn(), "" + year, null,
                 null, null, null, thirdBook.getTitle(),
                 null, null, null,
                 null, null, thirdBook.getLanguage(), null,

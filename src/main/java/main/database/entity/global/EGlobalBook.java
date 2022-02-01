@@ -38,9 +38,9 @@ public class EGlobalBook extends EBook {
     private String euroDiscount;
     @Column(name = "type")
     private String type;
-    @Column(name = "link_book_page")
+    @Column(name = "link_book_page", columnDefinition = "text")
     private String linkBookPage;
-    @Column(name = "title")
+    @Column(name = "title", columnDefinition = "text")
     private String title;
     @Column(name = "subtitle")
     private String subtitle;
