@@ -31,11 +31,11 @@ public class EGlobalBook extends EBook {
     @Column(name = "isbn10")
     private String isbn10;
     @Column(name = "publication_date")
-    private Integer publication_date;
+    private String publication_date;
     @Column(name = "euro_price")
-    private Double euroPrice;
+    private String euroPrice;
     @Column(name = "euro_discount")
-    private Double euroDiscount;
+    private String euroDiscount;
     @Column(name = "type")
     private String type;
     @Column(name = "link_book_page")
@@ -55,15 +55,15 @@ public class EGlobalBook extends EBook {
     @Column(name = "language")
     private String language;
     @Column(name = "num_pages")
-    private Integer numPages;
+    private String numPages;
     @Column(name = "height")
-    private Double height;
+    private String height;
     @Column(name = "width")
-    private Double width;
+    private String width;
     @Column(name = "spine")
-    private Double spine;
+    private String spine;
     @Column(name = "weight")
-    private Double weight;
+    private String weight;
     @Column(name = "short_description", columnDefinition = "text")
     private String shortDescription;
     @Column(name = "long_description", columnDefinition = "text")
@@ -71,7 +71,7 @@ public class EGlobalBook extends EBook {
     @Column(name = "review", columnDefinition = "text")
     private String review;
     @Column(name = "average_rating")
-    private Double averageRating;
+    private String averageRating;
     @Column(name = "image_url")
     private String imageUrl;
     @Column(name = "small_image_url")
@@ -94,13 +94,13 @@ public class EGlobalBook extends EBook {
 
 
     public EGlobalBook(
-            String isbn13, String isbn10, Integer publication_date, Double euroPrice,
-            Double euroDiscount, String type, String linkBookPage, String title,
+            String isbn13, String isbn10, String publication_date, String euroPrice,
+            String euroDiscount, String type, String linkBookPage, String title,
             String subtitle, String originalTitle, String edition,
-            String publisher, String publishedCountry, String language, Integer numPages,
-            Double height, Double width, Double spine, Double weight,
+            String publisher, String publishedCountry, String language, String numPages,
+            String height, String width, String spine, String weight,
             String shortDescription, String longDescription, String review,
-            Double averageRating, String imageUrl, String smallImageUrl, String series,
+            String averageRating, String imageUrl, String smallImageUrl, String series,
             String awards, ArrayList<EGlobalPlace> places, ArrayList<EGlobalCharacter> characters,
             ArrayList<EGlobalGenre> genres, ArrayList<EGlobalAuthor> authors, String source
     ) {
@@ -138,12 +138,12 @@ public class EGlobalBook extends EBook {
         this.source = source;
     }
 
-    public EGlobalBook(String isbn13, String isbn10, Integer publication_date, Double euroPrice,
-                       Double euroDiscount, String type, String linkBookPage, String title, String subtitle,
+    public EGlobalBook(String isbn13, String isbn10, String publication_date, String euroPrice,
+                       String euroDiscount, String type, String linkBookPage, String title, String subtitle,
                        String originalTitle, String edition, String publisher, String publishedCountry,
-                       String language, Integer numPages, Double height, Double width, Double spine,
-                       Double weight, String shortDescription, String longDescription,
-                       String review, Double averageRating, String imageUrl, String smallImageUrl,
+                       String language, String numPages, String height, String width, String spine,
+                       String weight, String shortDescription, String longDescription,
+                       String review, String averageRating, String imageUrl, String smallImageUrl,
                        String series, String awards, String source) {
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;

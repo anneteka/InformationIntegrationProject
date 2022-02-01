@@ -32,9 +32,9 @@ public class SetUpService {
     }
 
     public void setUpSources(String path1, String path2, String path3) throws FileNotFoundException {
-        CsvParserUtil<BlackwellBook> firstSourceParcer = new CsvParserUtil<BlackwellBook>();
-        CsvParserUtil<CsvSecondBook> secondSourceParcer = new CsvParserUtil<CsvSecondBook>();
-        CsvParserUtil<CsvThirdBook> thirdSourceParcer = new CsvParserUtil<CsvThirdBook>();
+        CsvParserUtil<BlackwellBook> firstSourceParcer = new CsvParserUtil<>();
+        CsvParserUtil<CsvSecondBook> secondSourceParcer = new CsvParserUtil<>();
+        CsvParserUtil<CsvThirdBook> thirdSourceParcer = new CsvParserUtil<>();
 
         List<BlackwellBook> parsedFirst = firstSourceParcer.parse(path1, BlackwellBook.class);
         List<CsvSecondBook> parsedSecond = secondSourceParcer.parse(path2, CsvSecondBook.class);
@@ -58,23 +58,10 @@ public class SetUpService {
     }
 
     public void setUpFromSources() throws FileNotFoundException {
-        String firstSource = Paths.get("src", "main", "resources", "data", "books1.csv").toString();
-        String secondSource = Paths.get("src", "main", "resources", "data", "test2.csv").toString();
-        String thirdSource = Paths.get("src", "main", "resources", "data", "books3.csv").toString();
+        String firstSource = Paths.get("src", "main", "resources", "data", "blackwell_shop_books.csv").toString();
+        String secondSource = Paths.get("src", "main", "resources", "data", "books2.csv").toString();
+        String thirdSource = Paths.get("src", "main", "resources", "data", "books3_copy.csv").toString();
         setUpSources(firstSource, secondSource, thirdSource);
-    }
-
-    public void setUpGlobal(){
-        setUpFromFirstSource();
-        setUpFromSecondSource();
-        setUpFromThirdSource();
-    }
-
-    private void setUpFromFirstSource() {
-    }
-    private void setUpFromSecondSource() {
-    }
-    private void setUpFromThirdSource() {
     }
 
     public void setUpTestSources() throws FileNotFoundException {

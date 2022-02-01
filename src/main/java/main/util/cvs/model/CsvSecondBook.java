@@ -24,7 +24,7 @@ public class CsvSecondBook extends CsvBook {
     @CsvBindByPosition(position = 10)
     private String title;
     @CsvBindByPosition(position = 12)
-    private double averageRating;
+    private String averageRating;
     @CsvBindByPosition(position = 21)
     private String imageUrl;
     @CsvBindByPosition(position = 22)

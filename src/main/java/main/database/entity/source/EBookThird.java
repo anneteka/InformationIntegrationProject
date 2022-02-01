@@ -43,13 +43,13 @@ public class EBookThird extends EBook {
     @Column(name = "first_publish_date")
     private String firstPublishDate;
     @Column(name = "avg_rating")
-    private double avgRating;
+    private String avgRating;
 
     public EBookThird(
         String title, String author, String series,
         String description, String genres, String awards,
         String characters, String places, String isbn, String isbn13,
-        String language, String firstPublishDate, double avgRating
+        String language, String firstPublishDate, String avgRating
     ) {
         this.title = title;
         this.author = author;

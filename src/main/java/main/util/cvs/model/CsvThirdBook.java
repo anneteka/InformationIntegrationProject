@@ -37,7 +37,7 @@ public class CsvThirdBook extends CsvBook {
     @CsvBindByPosition(position = 13)
     private String firstPublishDate;
     @CsvBindByPosition(position = 18)
-    private double avgRating;
+    private String avgRating;
 
 
     @Override

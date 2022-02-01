@@ -71,7 +71,13 @@ public class GBookDuplicateService {
         insertSource(thirdSource);
 
         mergeBookDuplicates();
+        cleanEmptyBooks();
         System.out.println("done");
+    }
+
+    private void cleanEmptyBooks() {
+        bookRepo.deleteAllByTitle("");
+        bookRepo.deleteAllByTitle(null);
     }
 
     public void mergeBookDuplicates() {
@@ -173,8 +179,8 @@ public class GBookDuplicateService {
             original.setSeries(copy.getSeries());
         }
         try {
-
             bookRepo.save(original);
+            bookRepo.delete(copy);
             for (EGlobalPlace place : copy.getPlaces()) {
                 bookService.addPlace(original, place);
             }
@@ -188,9 +194,8 @@ public class GBookDuplicateService {
                 bookService.addCharacter(original, character);
             }
         } catch (Exception e){
-            LOG.info("Tried to merge with deleted entity");
+
         }
-        bookRepo.delete(copy);
     }
 
 
@@ -236,9 +241,7 @@ public class GBookDuplicateService {
             authorSet.add(authorService.saveAuthor(author.trim()));
         }
 
-        int year = Integer.parseInt(secondBook.getOriginalPublicationYear());
-
-        return new EGlobalBook(secondBook.getIsbn13(), secondBook.getIsbn(), year, null,
+        return new EGlobalBook(secondBook.getIsbn13(), secondBook.getIsbn(), secondBook.getOriginalPublicationYear(), null,
                 null, null, null, secondBook.getTitle(),
                 null, secondBook.getOriginalTitle(), null,
                 null, null, null, null,
@@ -292,7 +295,7 @@ public class GBookDuplicateService {
             // TODO parser for dates like "Sep-96" "Mar-01"
         }
 
-        return new EGlobalBook(thirdBook.getIsbn13(), thirdBook.getIsbn(), year, null,
+        return new EGlobalBook(thirdBook.getIsbn13(), thirdBook.getIsbn(), ""+year, null,
                 null, null, null, thirdBook.getTitle(),
                 null, null, null,
                 null, null, thirdBook.getLanguage(), null,
