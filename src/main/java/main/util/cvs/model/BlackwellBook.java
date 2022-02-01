@@ -14,9 +14,9 @@ public class BlackwellBook extends CsvBook {
     @CsvBindByPosition(position = 0)
     private String isbn;
     @CsvBindByPosition(position = 2)
-    private double euro_price;
+    private String euro_price;
     @CsvBindByPosition(position = 3)
-    private double discount_euro;
+    private String discount_euro;
     @CsvBindByPosition(position = 4)
     private String type;
     @CsvBindByPosition(position = 6)
@@ -36,13 +36,13 @@ public class BlackwellBook extends CsvBook {
     @CsvBindByPosition(position = 17)
     private String language;
     @CsvBindByPosition(position = 19)
-    private double height;
+    private String height;
     @CsvBindByPosition(position = 20)
-    private double width;
+    private String width;
     @CsvBindByPosition(position = 21)
-    private double spine;
+    private String spine;
     @CsvBindByPosition(position = 22)
-    private double weight;
+    private String weight;
     @CsvBindByPosition(position = 24)
     private String shortBlurb;
     @CsvBindByPosition(position = 25)

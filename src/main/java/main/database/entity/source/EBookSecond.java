@@ -41,7 +41,7 @@ public class EBookSecond extends EBook {
     @Column(name = "title")
     private String title;
     @Column(name = "average_rating")
-    private double averageRating;
+    private String averageRating;
     @Column(name = "image_url")
     private String imageUrl;
     @Column(name = "small_image_url")
@@ -51,7 +51,7 @@ public class EBookSecond extends EBook {
         String isbn, String isbn13,
         String authors, String originalPublicationYear,
         String originalTitle, String title,
-        double averageRating, String imageUrl, String smallImageUrl) {
+        String averageRating, String imageUrl, String smallImageUrl) {
         this.isbn = isbn;
         this.isbn13 = isbn13;
         this.authors = authors;
