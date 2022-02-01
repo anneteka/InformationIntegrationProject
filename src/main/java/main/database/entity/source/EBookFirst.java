@@ -26,7 +26,7 @@ public class EBookFirst extends EBook {
     private String discount_euro;
     @Column(name = "type")
     private String type;
-    @Column(name = "link_book_page")
+    @Column(name = "link_book_page", columnDefinition = "text")
     private String linkBookPage;
     @Column(name = "name")
     private String name;
@@ -34,7 +34,7 @@ public class EBookFirst extends EBook {
     private String subtitle;
     @Column(name = "edition")
     private String edition;
-    @Column(name = "author")
+    @Column(name = "author", columnDefinition = "text")
     private String author;
     @Column(name = "publisher")
     private String publisher;

@@ -4,6 +4,8 @@ import main.database.entity.source.EBookFirst;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface FirstRepository extends CrudRepository<EBookFirst, Long> {
     @Override
@@ -11,4 +13,7 @@ public interface FirstRepository extends CrudRepository<EBookFirst, Long> {
 
     @Override
     <S extends EBookFirst> Iterable<S> saveAll(Iterable<S> iterable);
+
+    @Override
+    List<EBookFirst> findAll();
 }

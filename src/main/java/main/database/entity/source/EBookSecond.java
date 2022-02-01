@@ -32,7 +32,7 @@ public class EBookSecond extends EBook {
     private String isbn;
     @Column(name = "isbn13")
     private String isbn13;
-    @Column(name = "authors")
+    @Column(name = "authors", columnDefinition = "text")
     private String authors;
     @Column(name = "original_publication_year")
     private String originalPublicationYear;

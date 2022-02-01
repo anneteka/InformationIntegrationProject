@@ -18,9 +18,9 @@ public class EBookThird extends EBook {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "title")
+    @Column(name = "title", columnDefinition = "text")
     private String title;
-    @Column(name = "author")
+    @Column(name = "author", columnDefinition = "text")
     private String author;
     @Column(name = "series")
     private String series;
@@ -32,7 +32,7 @@ public class EBookThird extends EBook {
     private String awards;
     @Column(name = "characters", columnDefinition = "text")
     private String characters;
-    @Column(name = "places")
+    @Column(name = "places", columnDefinition = "text")
     private String places;
     @Column(name = "isbn")
     private String isbn;
