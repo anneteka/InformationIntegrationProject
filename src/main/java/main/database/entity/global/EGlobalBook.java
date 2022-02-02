@@ -84,14 +84,14 @@ public class EGlobalBook extends EBook {
     @Column(name = "source")
     private String source;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<EGlobalCharacter> characters;
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<EGlobalGenre> genres;
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<EGlobalAuthor> authors;
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<EGlobalPlace> places;
+    @ElementCollection
+    private List<String> characters;
+    @ElementCollection
+    private List<String> genres;
+    @ElementCollection
+    private List<String> authors;
+    @ElementCollection
+    private List<String> places;
 
 
     public EGlobalBook(
@@ -102,8 +102,8 @@ public class EGlobalBook extends EBook {
             String height, String width, String spine, String weight,
             String shortDescription, String longDescription, String review,
             String averageRating, String imageUrl, String smallImageUrl, String series,
-            String awards, List<EGlobalPlace> places, List<EGlobalCharacter> characters,
-            List<EGlobalGenre> genres, List<EGlobalAuthor> authors, String source
+            String awards, List<String> places, List<String> characters,
+            List<String> genres, List<String> authors, String source
     ) {
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;

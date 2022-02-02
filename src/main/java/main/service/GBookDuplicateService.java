@@ -8,6 +8,7 @@ import main.database.repository.source.FirstRepository;
 import main.database.repository.global.GBookRepository;
 import main.database.repository.source.SecondRepository;
 import main.database.repository.source.ThirdRepository;
+import main.util.MergeHelperUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,15 +64,13 @@ public class GBookDuplicateService {
         allBooks.addAll(secondSource);
         allBooks.addAll(thirdSource);
         List<EGlobalBook> uniqueBooks = mergeBookDuplicates(allBooks);
-
         bookRepo.saveAll(uniqueBooks);
         LOG.info("finished merging duplicates");
-        cleanEmptyBooks();
 
-        mergeAuthorDuplicates();
-        mergeCharacterDuplicates();
-        mergeGenreDuplicates();
-        mergePlaceDuplicates();
+//        mergeAuthorDuplicates();
+//        mergeCharacterDuplicates();
+//        mergeGenreDuplicates();
+//        mergePlaceDuplicates();
         System.out.println("done");
         LOG.info("DONE");
 
@@ -99,21 +98,34 @@ public class GBookDuplicateService {
         ArrayList<EGlobalBook> bookListCopy = new ArrayList<>(allBooks);
         int counter = allBooks.size();
         for (EGlobalBook book : allBooks) {
-            List<String> keys = constructKeys(book);
             counter--;
+            List<String> keys = constructKeys(book);
             for (String key : keys) {
-                if (allBookKeys.containsKey(key)) {
-                    EGlobalBook keyBook = allBookKeys.get(key);
-                    LOG.info("merging key" + key+ "\n" + allBookKeys.get(key) + "\n" + book.toString() + "\n");
-                    if (bookListCopy.contains(keyBook)) mergeBooksAlt(keyBook, book);
+                if (isNullOrEmpty(book.getTitle())) {
                     bookListCopy.remove(book);
-                } else {
-                    if (bookListCopy.contains(book))
-                        allBookKeys.put(key, book);
+                    continue;
                 }
+                if (isNullOrEmpty(key)) {
+                    continue;
+                }
+                mergeIteration(bookListCopy, allBookKeys, book, key);
             }
+
         }
         return bookListCopy;
+    }
+
+    private void mergeIteration(List<EGlobalBook> bookListCopy,
+                                Map<String, EGlobalBook> allBookKeys, EGlobalBook book, String key) {
+        if (allBookKeys.containsKey(key)) {
+            EGlobalBook keyBook = allBookKeys.get(key);
+            LOG.info("merging key" + key + "\n" + allBookKeys.get(key) + "\n" + book.toString() + "\n");
+            if (bookListCopy.contains(keyBook)) mergeBooksAlt(keyBook, book);
+            bookListCopy.remove(book);
+        } else {
+            if (bookListCopy.contains(book))
+                allBookKeys.put(key, book);
+        }
     }
 
     private List<String> constructKeys(EGlobalBook book) {
@@ -141,15 +153,38 @@ public class GBookDuplicateService {
         List<EGlobalAuthor> allAuthors = authorService.findAll();
         // check all author combinations here?
         int l = allAuthors.size();
-        for (int i = 0; i < l; i++){
+        for (int i = 0; i < l; i++) {
             var keep = allAuthors.get(i);
-            for (int j = i+1; j<l; j++){
+            for (int j = i + 1; j < l; j++) {
                 var discard = allAuthors.get(j);
-                if (!keep.equals(discard)){
+                if (!keep.equals(discard)) {
                     authorService.mergeAuthors(keep, discard);
                 }
             }
         }
+    }
+
+    public void mergeBookAuthorDuplicates(EGlobalBook book) {
+        ArrayList<String> copyAuthors = new ArrayList<>(book.getAuthors());
+        for (String author1 : copyAuthors) {
+            for (String author2 : copyAuthors) {
+                if (book.getAuthors().contains(author1) && book.getAuthors().contains(author2)) {
+                    if (isAuthorDuplicate(author1, author2)) {
+                        book.getAuthors().remove(author2);
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean isAuthorDuplicate(String author1, String author2) {
+        String[] names1 = author1.toLowerCase().split(" ");
+        String[] names2 = author2.toLowerCase().split(" ");
+        int minMatches = Math.min(Math.min(names1.length, names2.length), 2); // at least 2 matching name parts or one if only one name given
+
+        int matches = MergeHelperUtil.getPersonNameMatchesCount(names1, names2);
+
+        return matches >= minMatches;
     }
 
     public void mergeCharacterDuplicates() {
@@ -157,11 +192,11 @@ public class GBookDuplicateService {
         List<EGlobalCharacter> allCharacters = characterService.findAll();
         // check all author combinations here?
         int l = allCharacters.size();
-        for (int i = 0; i < l; i++){
+        for (int i = 0; i < l; i++) {
             var keep = allCharacters.get(i);
-            for (int j = i+1; j<l; j++){
+            for (int j = i + 1; j < l; j++) {
                 var discard = allCharacters.get(j);
-                if (!keep.equals(discard)){
+                if (!keep.equals(discard)) {
                     characterService.mergeCharacters(keep, discard);
                 }
             }
@@ -173,11 +208,11 @@ public class GBookDuplicateService {
         List<EGlobalGenre> allGenres = genreService.findAll();
         // check all author combinations here?
         int l = allGenres.size();
-        for (int i = 0; i < l; i++){
+        for (int i = 0; i < l; i++) {
             var keep = allGenres.get(i);
-            for (int j = i+1; j<l; j++){
+            for (int j = i + 1; j < l; j++) {
                 var discard = allGenres.get(j);
-                if (!keep.equals(discard)){
+                if (!keep.equals(discard)) {
                     genreService.mergeGenres(keep, discard);
                 }
             }
@@ -189,11 +224,11 @@ public class GBookDuplicateService {
         List<EGlobalPlace> allPlaces = placeService.findAll();
         // check all author combinations here?
         int l = allPlaces.size();
-        for (int i = 0; i < l; i++){
+        for (int i = 0; i < l; i++) {
             var keep = allPlaces.get(i);
-            for (int j = i+1; j<l; j++){
+            for (int j = i + 1; j < l; j++) {
                 var discard = allPlaces.get(j);
-                if (!keep.equals(discard)){
+                if (!keep.equals(discard)) {
                     placeService.mergePlaces(keep, discard);
                 }
             }
@@ -221,30 +256,30 @@ public class GBookDuplicateService {
     }
 
     private void mergeBooksAlt(EGlobalBook original, EGlobalBook copy) {
-        if (isNullOrEmpty(copy.getIsbn13())) original.setIsbn13(copy.getIsbn13());
-        if (isNullOrEmpty(copy.getIsbn10())) original.setIsbn10(copy.getIsbn10());
-        if (isNullOrEmpty(copy.getEuroPrice())) original.setEuroPrice(copy.getEuroPrice());
-        if (isNullOrEmpty(copy.getEuroDiscount())) original.setEuroDiscount(copy.getEuroDiscount());
-        if (isNullOrEmpty(copy.getType())) original.setType(copy.getType());
-        if (isNullOrEmpty(copy.getLinkBookPage())) original.setLinkBookPage(copy.getLinkBookPage());
-        if (isNullOrEmpty(copy.getTitle())) original.setTitle(copy.getTitle());
-        if (isNullOrEmpty(copy.getSubtitle())) original.setSubtitle(copy.getSubtitle());
-        if (isNullOrEmpty(copy.getPublisher())) original.setPublisher(copy.getPublisher());
-        if (isNullOrEmpty(copy.getPublishedCountry())) original.setPublishedCountry(copy.getPublishedCountry());
-        if (isNullOrEmpty(copy.getLanguage())) original.setLanguage(copy.getLanguage());
-        if (isNullOrEmpty(copy.getHeight())) original.setHeight(copy.getHeight());
-        if (isNullOrEmpty(copy.getWidth())) original.setWidth(copy.getWidth());
-        if (isNullOrEmpty(copy.getSpine())) original.setSpine(copy.getSpine());
-        if (isNullOrEmpty(copy.getWeight())) original.setWeight(copy.getWeight());
-        if (isNullOrEmpty(copy.getShortDescription())) original.setShortDescription(copy.getShortDescription());
-        if (isNullOrEmpty(copy.getLongDescription())) original.setLongDescription(copy.getLongDescription());
-        if (isNullOrEmpty(copy.getReview())) original.setReview(copy.getReview());
-        if (isNullOrEmpty(copy.getPublication_date())) original.setPublication_date(copy.getPublication_date());
-        if (isNullOrEmpty(copy.getOriginalTitle())) original.setOriginalTitle(copy.getOriginalTitle());
-        if (isNullOrEmpty(copy.getAverageRating())) original.setAverageRating(copy.getAverageRating());
-        if (isNullOrEmpty(copy.getImageUrl())) original.setImageUrl(copy.getImageUrl());
-        if (isNullOrEmpty(copy.getSmallImageUrl())) original.setSmallImageUrl(copy.getSmallImageUrl());
-        if (isNullOrEmpty(original.getSeries())) {
+        if (!isNullOrEmpty(copy.getIsbn13())) original.setIsbn13(copy.getIsbn13());
+        if (!isNullOrEmpty(copy.getIsbn10())) original.setIsbn10(copy.getIsbn10());
+        if (!isNullOrEmpty(copy.getEuroPrice())) original.setEuroPrice(copy.getEuroPrice());
+        if (!isNullOrEmpty(copy.getEuroDiscount())) original.setEuroDiscount(copy.getEuroDiscount());
+        if (!isNullOrEmpty(copy.getType())) original.setType(copy.getType());
+        if (!isNullOrEmpty(copy.getLinkBookPage())) original.setLinkBookPage(copy.getLinkBookPage());
+        if (!isNullOrEmpty(copy.getTitle())) original.setTitle(copy.getTitle());
+        if (!isNullOrEmpty(copy.getSubtitle())) original.setSubtitle(copy.getSubtitle());
+        if (!isNullOrEmpty(copy.getPublisher())) original.setPublisher(copy.getPublisher());
+        if (!isNullOrEmpty(copy.getPublishedCountry())) original.setPublishedCountry(copy.getPublishedCountry());
+        if (!isNullOrEmpty(copy.getLanguage())) original.setLanguage(copy.getLanguage());
+        if (!isNullOrEmpty(copy.getHeight())) original.setHeight(copy.getHeight());
+        if (!isNullOrEmpty(copy.getWidth())) original.setWidth(copy.getWidth());
+        if (!isNullOrEmpty(copy.getSpine())) original.setSpine(copy.getSpine());
+        if (!isNullOrEmpty(copy.getWeight())) original.setWeight(copy.getWeight());
+        if (!isNullOrEmpty(copy.getShortDescription())) original.setShortDescription(copy.getShortDescription());
+        if (!isNullOrEmpty(copy.getLongDescription())) original.setLongDescription(copy.getLongDescription());
+        if (!isNullOrEmpty(copy.getReview())) original.setReview(copy.getReview());
+        if (!isNullOrEmpty(copy.getPublication_date())) original.setPublication_date(copy.getPublication_date());
+        if (!isNullOrEmpty(copy.getOriginalTitle())) original.setOriginalTitle(copy.getOriginalTitle());
+        if (!isNullOrEmpty(copy.getAverageRating())) original.setAverageRating(copy.getAverageRating());
+        if (!isNullOrEmpty(copy.getImageUrl())) original.setImageUrl(copy.getImageUrl());
+        if (!isNullOrEmpty(copy.getSmallImageUrl())) original.setSmallImageUrl(copy.getSmallImageUrl());
+        if (!isNullOrEmpty(original.getSeries())) {
             original.setSeries(copy.getSeries());
         }
 
@@ -285,18 +320,18 @@ public class GBookDuplicateService {
         try {
             bookRepo.save(original);
             bookRepo.delete(copy);
-            for (EGlobalPlace place : copy.getPlaces()) {
-                bookService.addPlace(original, place);
-            }
-            for (EGlobalAuthor author : copy.getAuthors()) {
-                bookService.addAuthor(original, author);
-            }
-            for (EGlobalGenre genre : original.getGenres()) {
-                bookService.addGenre(original, genre);
-            }
-            for (EGlobalCharacter character : original.getCharacters()) {
-                bookService.addCharacter(original, character);
-            }
+//            for (EGlobalPlace place : copy.getPlaces()) {
+//                bookService.addPlace(original, place);
+//            }
+//            for (EGlobalAuthor author : copy.getAuthors()) {
+//                bookService.addAuthor(original, author);
+//            }
+//            for (EGlobalGenre genre : original.getGenres()) {
+//                bookService.addGenre(original, genre);
+//            }
+//            for (EGlobalCharacter character : original.getCharacters()) {
+//                bookService.addCharacter(original, character);
+//            }
         } catch (Exception e) {
 
         }
@@ -308,7 +343,7 @@ public class GBookDuplicateService {
     }
 
     public EGlobalBook firstBookToEGlobalBook(EBookFirst firstBook) {
-        ArrayList<EGlobalAuthor> authorSet = new ArrayList<>();
+        HashSet<String> authorSet = new HashSet<>();
 
         String authorList = firstBook.getAuthor();
 
@@ -321,7 +356,7 @@ public class GBookDuplicateService {
                 author = author.substring(0, indexOpen);
             }
 
-            authorSet.add(new EGlobalAuthor(author.trim()));
+            authorSet.add(author.trim());
         }
 
         return new EGlobalBook(firstBook.getIsbn(), null, null, firstBook.getEuro_price(), firstBook.getDiscount_euro(),
@@ -330,63 +365,69 @@ public class GBookDuplicateService {
                 firstBook.getPublished_country(), firstBook.getLanguage(), null, firstBook.getHeight(),
                 firstBook.getWidth(), firstBook.getSpine(), firstBook.getWeight(), firstBook.getShortBlurb(),
                 firstBook.getLongBlurb(),
-                firstBook.getBlurbReview(), null, null, null, null, null, new ArrayList<>(),
-                new ArrayList<>(), new ArrayList<>(), authorSet, "blackwell");
+                firstBook.getBlurbReview(), null, null, null, null, null,
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(authorSet), "blackwell");
     }
 
     public EGlobalBook secondBookToEGlobalBook(EBookSecond secondBook) {
-        ArrayList<EGlobalAuthor> authorSet = new ArrayList<>();
+        HashSet<String> authorSet = new HashSet<>();
 
         String authorList = secondBook.getAuthors();
         String authors[] = authorList.split(",");
-
+        String isbn13 = "";
+        if (secondBook.getIsbn13().length() == 13) {
+            isbn13 = secondBook.getIsbn13();
+        }
+        if (secondBook.getIsbn13().length() > 14) {
+            isbn13 = secondBook.getIsbn13().charAt(0) + secondBook.getIsbn13().substring(2, 14);
+        }
         for (String author : authors) {
-            authorSet.add(new EGlobalAuthor(author.trim()));
+            authorSet.add(author.trim());
         }
 
-        return new EGlobalBook(secondBook.getIsbn13(), secondBook.getIsbn(), secondBook.getOriginalPublicationYear(), null,
+        return new EGlobalBook(isbn13, secondBook.getIsbn(), secondBook.getOriginalPublicationYear(), null,
                 null, null, null, secondBook.getTitle(),
                 null, secondBook.getOriginalTitle(), null,
                 null, null, null, null,
                 null, null, null, null,
                 null, null, null,
                 secondBook.getAverageRating(), secondBook.getImageUrl(), secondBook.getSmallImageUrl(), null,
-                null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), authorSet, "source2");
+                null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(authorSet), "source2");
     }
 
     public EGlobalBook thirdBookToEGlobalBook(EBookThird thirdBook) {
         // Save author list
-        ArrayList<EGlobalAuthor> authorSet = new ArrayList<EGlobalAuthor>();
+        HashSet<String> authorSet = new HashSet<>();
         String authorList = thirdBook.getAuthor();
         String authors[] = authorList.split(",");
 
         for (String author : authors) {
-            authorSet.add(new EGlobalAuthor(author.trim()));
+            authorSet.add(author.trim());
         }
 
         // Save genre list
-        ArrayList<EGlobalGenre> genreSet = new ArrayList<>();
+        HashSet<String> genreSet = new HashSet<>();
         String genreList = thirdBook.getAuthor();
         String genres[] = genreList.split(",");
 
         for (String genre : genres) {
-            genreSet.add(new EGlobalGenre(genre.trim()));
+            genreSet.add(genre.trim());
         }
 
         // Save character list
-        ArrayList<EGlobalCharacter> characterSet = new ArrayList<>();
+        HashSet<String> characterSet = new HashSet<>();
         String characterList = thirdBook.getAuthor();
         String[] characters = characterList.split(",");
 
         for (String character : characters) {
-            characterSet.add(new EGlobalCharacter(character.trim()));
+            characterSet.add(character.trim());
         }
 
-        ArrayList<EGlobalPlace> placeSet = new ArrayList<>();
+        HashSet<String> placeSet = new HashSet<>();
         String placeList = thirdBook.getPlaces();
         String[] places = placeList.split(",");
         for (String place : places) {
-            placeSet.add(new EGlobalPlace(place.trim()));
+            placeSet.add(place.trim());
         }
 
         // last 4 characters of the string are year
@@ -405,7 +446,8 @@ public class GBookDuplicateService {
                 null, null, null, null,
                 null, thirdBook.getDescription(), null,
                 thirdBook.getAvgRating(), null, null, thirdBook.getSeries(),
-                thirdBook.getAwards(), new ArrayList<>(), characterSet, genreSet, authorSet, "source3");
+                thirdBook.getAwards(), new ArrayList<>(placeSet), new ArrayList<>(characterSet),
+                new ArrayList<>(genreSet), new ArrayList<>(authorSet), "source3");
     }
 
 }

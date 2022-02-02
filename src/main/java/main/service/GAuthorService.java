@@ -47,7 +47,7 @@ public class GAuthorService {
             // enough matches, discard second author
             // TODO 
             //repository.delete(discard);
-            System.out.println(keep.getName()+ " : " +discard.getName());
+            LOG.debug(keep.getName()+ " : " +discard.getName());
         }
     }
 }
