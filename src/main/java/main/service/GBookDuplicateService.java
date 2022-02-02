@@ -67,7 +67,14 @@ public class GBookDuplicateService {
         bookRepo.saveAll(uniqueBooks);
         LOG.info("finished merging duplicates");
         cleanEmptyBooks();
+
+        mergeAuthorDuplicates();
+        mergeCharacterDuplicates();
+        mergeGenreDuplicates();
+        mergePlaceDuplicates();
+        System.out.println("done");
         LOG.info("DONE");
+
     }
 
     private void cleanEmptyBooks() {
@@ -130,16 +137,67 @@ public class GBookDuplicateService {
     }
 
     public void mergeAuthorDuplicates() {
+        System.out.println("Merging authors");
         List<EGlobalAuthor> allAuthors = authorService.findAll();
         // check all author combinations here?
+        int l = allAuthors.size();
+        for (int i = 0; i < l; i++){
+            var keep = allAuthors.get(i);
+            for (int j = i+1; j<l; j++){
+                var discard = allAuthors.get(j);
+                if (!keep.equals(discard)){
+                    authorService.mergeAuthors(keep, discard);
+                }
+            }
+        }
     }
 
     public void mergeCharacterDuplicates() {
+        System.out.println("Merging characters");
+        List<EGlobalCharacter> allCharacters = characterService.findAll();
+        // check all author combinations here?
+        int l = allCharacters.size();
+        for (int i = 0; i < l; i++){
+            var keep = allCharacters.get(i);
+            for (int j = i+1; j<l; j++){
+                var discard = allCharacters.get(j);
+                if (!keep.equals(discard)){
+                    characterService.mergeCharacters(keep, discard);
+                }
+            }
+        }
+    }
 
+    public void mergeGenreDuplicates() {
+        System.out.println("Merging genres");
+        List<EGlobalGenre> allGenres = genreService.findAll();
+        // check all author combinations here?
+        int l = allGenres.size();
+        for (int i = 0; i < l; i++){
+            var keep = allGenres.get(i);
+            for (int j = i+1; j<l; j++){
+                var discard = allGenres.get(j);
+                if (!keep.equals(discard)){
+                    genreService.mergeGenres(keep, discard);
+                }
+            }
+        }
     }
 
     public void mergePlaceDuplicates() {
-        // ???
+        System.out.println("Merging places");
+        List<EGlobalPlace> allPlaces = placeService.findAll();
+        // check all author combinations here?
+        int l = allPlaces.size();
+        for (int i = 0; i < l; i++){
+            var keep = allPlaces.get(i);
+            for (int j = i+1; j<l; j++){
+                var discard = allPlaces.get(j);
+                if (!keep.equals(discard)){
+                    placeService.mergePlaces(keep, discard);
+                }
+            }
+        }
     }
 
     public void insertBook(EGlobalBook book) {
