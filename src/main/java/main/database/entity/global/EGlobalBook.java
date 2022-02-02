@@ -11,16 +11,17 @@ import lombok.ToString;
 import main.database.entity.EBook;
 
 import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode
 @Entity
-@Table(name= "global_book")
+@Table(name = "global_book")
 public class EGlobalBook extends EBook {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -101,8 +102,8 @@ public class EGlobalBook extends EBook {
             String height, String width, String spine, String weight,
             String shortDescription, String longDescription, String review,
             String averageRating, String imageUrl, String smallImageUrl, String series,
-            String awards, ArrayList<EGlobalPlace> places, ArrayList<EGlobalCharacter> characters,
-            ArrayList<EGlobalGenre> genres, ArrayList<EGlobalAuthor> authors, String source
+            String awards, List<EGlobalPlace> places, List<EGlobalCharacter> characters,
+            List<EGlobalGenre> genres, List<EGlobalAuthor> authors, String source
     ) {
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;
@@ -177,5 +178,22 @@ public class EGlobalBook extends EBook {
         this.authors = new ArrayList<>();
         this.genres = new ArrayList<>();
         this.places = new ArrayList<>();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EGlobalBook book = (EGlobalBook) o;
+
+        return (Objects.equals(isbn13, book.isbn13)) || Objects.equals(isbn10, book.isbn10);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = isbn13 != null ? isbn13.hashCode() : 0;
+        result = 31 * result + (isbn10 != null ? isbn10.hashCode() : 0);
+        return result;
     }
 }
