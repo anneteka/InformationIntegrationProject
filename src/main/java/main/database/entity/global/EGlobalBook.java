@@ -21,6 +21,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @ToString
 @Entity
+@EqualsAndHashCode
 @Table(name = "global_book")
 public class EGlobalBook extends EBook {
     @Id
@@ -178,22 +179,5 @@ public class EGlobalBook extends EBook {
         this.authors = new ArrayList<>();
         this.genres = new ArrayList<>();
         this.places = new ArrayList<>();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        EGlobalBook book = (EGlobalBook) o;
-
-        return (Objects.equals(isbn13, book.isbn13)) || Objects.equals(isbn10, book.isbn10);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = isbn13 != null ? isbn13.hashCode() : 0;
-        result = 31 * result + (isbn10 != null ? isbn10.hashCode() : 0);
-        return result;
     }
 }

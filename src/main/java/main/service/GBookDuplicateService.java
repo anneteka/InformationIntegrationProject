@@ -108,25 +108,35 @@ public class GBookDuplicateService {
                 if (isNullOrEmpty(key)) {
                     continue;
                 }
-                mergeIteration(bookListCopy, allBookKeys, book, key);
+                if (allBookKeys.containsKey(key)) {
+                    EGlobalBook keyBook = allBookKeys.get(key);
+                    LOG.info("merging key" + key + "\n" + allBookKeys.get(key) + "\n" + book.toString() + "\n");
+                    if (bookListCopy.contains(keyBook)){
+                        mergeBooksAlt(keyBook, book);
+                    }
+                    bookListCopy.remove(book);
+                } else {
+                    if (bookListCopy.contains(book))
+                        allBookKeys.put(key, book);
+                }
             }
 
         }
         return bookListCopy;
     }
 
-    private void mergeIteration(List<EGlobalBook> bookListCopy,
-                                Map<String, EGlobalBook> allBookKeys, EGlobalBook book, String key) {
-        if (allBookKeys.containsKey(key)) {
-            EGlobalBook keyBook = allBookKeys.get(key);
-            LOG.info("merging key" + key + "\n" + allBookKeys.get(key) + "\n" + book.toString() + "\n");
-            if (bookListCopy.contains(keyBook)) mergeBooksAlt(keyBook, book);
-            bookListCopy.remove(book);
-        } else {
-            if (bookListCopy.contains(book))
-                allBookKeys.put(key, book);
-        }
-    }
+//    private void mergeIteration(List<EGlobalBook> bookListCopy,
+//                                Map<String, EGlobalBook> allBookKeys, EGlobalBook book, String key) {
+//        if (allBookKeys.containsKey(key)) {
+//            EGlobalBook keyBook = allBookKeys.get(key);
+//            LOG.info("merging key" + key + "\n" + allBookKeys.get(key) + "\n" + book.toString() + "\n");
+//            if (bookListCopy.contains(keyBook)) mergeBooksAlt(keyBook, book);
+//            bookListCopy.remove(book);
+//        } else {
+//            if (bookListCopy.contains(book))
+//                allBookKeys.put(key, book);
+//        }
+//    }
 
     private List<String> constructKeys(EGlobalBook book) {
         HashSet<String> keys = new HashSet<>();
@@ -256,30 +266,30 @@ public class GBookDuplicateService {
     }
 
     private void mergeBooksAlt(EGlobalBook original, EGlobalBook copy) {
-        if (!isNullOrEmpty(copy.getIsbn13())) original.setIsbn13(copy.getIsbn13());
-        if (!isNullOrEmpty(copy.getIsbn10())) original.setIsbn10(copy.getIsbn10());
-        if (!isNullOrEmpty(copy.getEuroPrice())) original.setEuroPrice(copy.getEuroPrice());
-        if (!isNullOrEmpty(copy.getEuroDiscount())) original.setEuroDiscount(copy.getEuroDiscount());
-        if (!isNullOrEmpty(copy.getType())) original.setType(copy.getType());
-        if (!isNullOrEmpty(copy.getLinkBookPage())) original.setLinkBookPage(copy.getLinkBookPage());
-        if (!isNullOrEmpty(copy.getTitle())) original.setTitle(copy.getTitle());
-        if (!isNullOrEmpty(copy.getSubtitle())) original.setSubtitle(copy.getSubtitle());
-        if (!isNullOrEmpty(copy.getPublisher())) original.setPublisher(copy.getPublisher());
-        if (!isNullOrEmpty(copy.getPublishedCountry())) original.setPublishedCountry(copy.getPublishedCountry());
-        if (!isNullOrEmpty(copy.getLanguage())) original.setLanguage(copy.getLanguage());
-        if (!isNullOrEmpty(copy.getHeight())) original.setHeight(copy.getHeight());
-        if (!isNullOrEmpty(copy.getWidth())) original.setWidth(copy.getWidth());
-        if (!isNullOrEmpty(copy.getSpine())) original.setSpine(copy.getSpine());
-        if (!isNullOrEmpty(copy.getWeight())) original.setWeight(copy.getWeight());
-        if (!isNullOrEmpty(copy.getShortDescription())) original.setShortDescription(copy.getShortDescription());
-        if (!isNullOrEmpty(copy.getLongDescription())) original.setLongDescription(copy.getLongDescription());
-        if (!isNullOrEmpty(copy.getReview())) original.setReview(copy.getReview());
-        if (!isNullOrEmpty(copy.getPublication_date())) original.setPublication_date(copy.getPublication_date());
-        if (!isNullOrEmpty(copy.getOriginalTitle())) original.setOriginalTitle(copy.getOriginalTitle());
-        if (!isNullOrEmpty(copy.getAverageRating())) original.setAverageRating(copy.getAverageRating());
-        if (!isNullOrEmpty(copy.getImageUrl())) original.setImageUrl(copy.getImageUrl());
-        if (!isNullOrEmpty(copy.getSmallImageUrl())) original.setSmallImageUrl(copy.getSmallImageUrl());
-        if (!isNullOrEmpty(original.getSeries())) {
+        if (!isNullOrEmpty(copy.getIsbn13()) && isNullOrEmpty(original.getIsbn13())) original.setIsbn13(copy.getIsbn13());
+        if (!isNullOrEmpty(copy.getIsbn10()) && isNullOrEmpty(original.getIsbn10())) original.setIsbn10(copy.getIsbn10());
+        if (!isNullOrEmpty(copy.getEuroPrice()) && isNullOrEmpty(original.getEuroPrice())) original.setEuroPrice(copy.getEuroPrice());
+        if (!isNullOrEmpty(copy.getEuroDiscount()) && isNullOrEmpty(original.getEuroDiscount())) original.setEuroDiscount(copy.getEuroDiscount());
+        if (!isNullOrEmpty(copy.getType()) && isNullOrEmpty(original.getType())) original.setType(copy.getType());
+        if (!isNullOrEmpty(copy.getLinkBookPage()) && isNullOrEmpty(original.getLinkBookPage())) original.setLinkBookPage(copy.getLinkBookPage());
+        if (!isNullOrEmpty(copy.getTitle()) && isNullOrEmpty(original.getTitle())) original.setTitle(copy.getTitle());
+        if (!isNullOrEmpty(copy.getSubtitle()) && isNullOrEmpty(original.getSubtitle())) original.setSubtitle(copy.getSubtitle());
+        if (!isNullOrEmpty(copy.getPublisher()) && isNullOrEmpty(original.getPublisher())) original.setPublisher(copy.getPublisher());
+        if (!isNullOrEmpty(copy.getPublishedCountry()) && isNullOrEmpty(original.getPublishedCountry())) original.setPublishedCountry(copy.getPublishedCountry());
+        if (!isNullOrEmpty(copy.getLanguage()) && isNullOrEmpty(original.getLanguage())) original.setLanguage(copy.getLanguage());
+        if (!isNullOrEmpty(copy.getHeight()) && isNullOrEmpty(original.getHeight())) original.setHeight(copy.getHeight());
+        if (!isNullOrEmpty(copy.getWidth()) && isNullOrEmpty(original.getWidth())) original.setWidth(copy.getWidth());
+        if (!isNullOrEmpty(copy.getSpine()) && isNullOrEmpty(original.getSpine())) original.setSpine(copy.getSpine());
+        if (!isNullOrEmpty(copy.getWeight()) && isNullOrEmpty(original.getWeight())) original.setWeight(copy.getWeight());
+        if (!isNullOrEmpty(copy.getShortDescription()) && isNullOrEmpty(original.getShortDescription())) original.setShortDescription(copy.getShortDescription());
+        if (!isNullOrEmpty(copy.getLongDescription()) && isNullOrEmpty(original.getLongDescription())) original.setLongDescription(copy.getLongDescription());
+        if (!isNullOrEmpty(copy.getReview()) && isNullOrEmpty(original.getReview())) original.setReview(copy.getReview());
+        if (!isNullOrEmpty(copy.getPublication_date()) && isNullOrEmpty(original.getPublication_date())) original.setPublication_date(copy.getPublication_date());
+        if (!isNullOrEmpty(copy.getOriginalTitle()) && isNullOrEmpty(original.getOriginalTitle())) original.setOriginalTitle(copy.getOriginalTitle());
+        if (!isNullOrEmpty(copy.getAverageRating()) && isNullOrEmpty(original.getAverageRating())) original.setAverageRating(copy.getAverageRating());
+        if (!isNullOrEmpty(copy.getImageUrl()) && isNullOrEmpty(original.getImageUrl())) original.setImageUrl(copy.getImageUrl());
+        if (!isNullOrEmpty(copy.getSmallImageUrl()) && isNullOrEmpty(original.getSmallImageUrl())) original.setSmallImageUrl(copy.getSmallImageUrl());
+        if (!isNullOrEmpty(original.getSeries()) && isNullOrEmpty(original.getSeries())) {
             original.setSeries(copy.getSeries());
         }
 
