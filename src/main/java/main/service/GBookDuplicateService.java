@@ -64,13 +64,17 @@ public class GBookDuplicateService {
         allBooks.addAll(secondSource);
         allBooks.addAll(thirdSource);
         List<EGlobalBook> uniqueBooks = mergeBookDuplicates(allBooks);
+
+        for (EGlobalBook book: uniqueBooks){
+            mergeBookAuthorDuplicates(book);
+            mergeBookCharacterDuplicates(book);
+            mergeBookGenreDuplicates(book);
+            mergeBookPlacesDuplicates(book);
+        }
+
         bookRepo.saveAll(uniqueBooks);
         LOG.info("finished merging duplicates");
 
-//        mergeAuthorDuplicates();
-//        mergeCharacterDuplicates();
-//        mergeGenreDuplicates();
-//        mergePlaceDuplicates();
         System.out.println("done");
         LOG.info("DONE");
 
@@ -158,28 +162,12 @@ public class GBookDuplicateService {
         return line.toUpperCase().replaceAll("[^QWRTPSDFGHJKLZXCVBNM0-9]", "");
     }
 
-    public void mergeAuthorDuplicates() {
-        System.out.println("Merging authors");
-        List<EGlobalAuthor> allAuthors = authorService.findAll();
-        // check all author combinations here?
-        int l = allAuthors.size();
-        for (int i = 0; i < l; i++) {
-            var keep = allAuthors.get(i);
-            for (int j = i + 1; j < l; j++) {
-                var discard = allAuthors.get(j);
-                if (!keep.equals(discard)) {
-                    authorService.mergeAuthors(keep, discard);
-                }
-            }
-        }
-    }
-
     public void mergeBookAuthorDuplicates(EGlobalBook book) {
         ArrayList<String> copyAuthors = new ArrayList<>(book.getAuthors());
         for (String author1 : copyAuthors) {
             for (String author2 : copyAuthors) {
                 if (book.getAuthors().contains(author1) && book.getAuthors().contains(author2)) {
-                    if (isAuthorDuplicate(author1, author2)) {
+                    if (isPersonDuplicate(author1, author2)) {
                         book.getAuthors().remove(author2);
                     }
                 }
@@ -187,7 +175,46 @@ public class GBookDuplicateService {
         }
     }
 
-    public boolean isAuthorDuplicate(String author1, String author2) {
+    public void mergeBookCharacterDuplicates(EGlobalBook book) {
+        ArrayList<String> copyCharacters = new ArrayList<>(book.getCharacters());
+        for (String character1 : copyCharacters) {
+            for (String character2 : copyCharacters) {
+                if (book.getCharacters().contains(character1) && book.getCharacters().contains(character2)) {
+                    if (isPersonDuplicate(character1, character2)) {
+                        book.getCharacters().remove(character2);
+                    }
+                }
+            }
+        }
+    }
+
+    public void mergeBookGenreDuplicates(EGlobalBook book) {
+        ArrayList<String> copyGenres = new ArrayList<>(book.getGenres());
+        for (String genre1 : copyGenres) {
+            for (String genre2 : copyGenres) {
+                if (book.getGenres().contains(genre1) && book.getGenres().contains(genre2)) {
+                    if (isExactDuplicate(genre1, genre2)) {
+                        book.getGenres().remove(genre2);
+                    }
+                }
+            }
+        }
+    }
+
+    public void mergeBookPlacesDuplicates(EGlobalBook book) {
+        ArrayList<String> copyPlaces = new ArrayList<>(book.getPlaces());
+        for (String place1 : copyPlaces) {
+            for (String place2 : copyPlaces) {
+                if (book.getPlaces().contains(place1) && book.getPlaces().contains(place2)) {
+                    if (isExactDuplicate(place1, place2)) {
+                        book.getPlaces().remove(place2);
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean isPersonDuplicate(String author1, String author2) {
         String[] names1 = author1.toLowerCase().split(" ");
         String[] names2 = author2.toLowerCase().split(" ");
         int minMatches = Math.min(Math.min(names1.length, names2.length), 2); // at least 2 matching name parts or one if only one name given
@@ -197,53 +224,17 @@ public class GBookDuplicateService {
         return matches >= minMatches;
     }
 
-    public void mergeCharacterDuplicates() {
-        System.out.println("Merging characters");
-        List<EGlobalCharacter> allCharacters = characterService.findAll();
-        // check all author combinations here?
-        int l = allCharacters.size();
-        for (int i = 0; i < l; i++) {
-            var keep = allCharacters.get(i);
-            for (int j = i + 1; j < l; j++) {
-                var discard = allCharacters.get(j);
-                if (!keep.equals(discard)) {
-                    characterService.mergeCharacters(keep, discard);
-                }
-            }
-        }
-    }
+    public boolean isExactDuplicate(String string1, String string2) {
+        String[] names1 = string1.toLowerCase().split(" ");
+        String[] names2 = string2.toLowerCase().split(" ");
+        int minMatches = Math.min(names1.length, names2.length); // every part of the string must have a match
 
-    public void mergeGenreDuplicates() {
-        System.out.println("Merging genres");
-        List<EGlobalGenre> allGenres = genreService.findAll();
-        // check all author combinations here?
-        int l = allGenres.size();
-        for (int i = 0; i < l; i++) {
-            var keep = allGenres.get(i);
-            for (int j = i + 1; j < l; j++) {
-                var discard = allGenres.get(j);
-                if (!keep.equals(discard)) {
-                    genreService.mergeGenres(keep, discard);
-                }
-            }
-        }
-    }
+        int matches = MergeHelperUtil.getExactMatchesCount(names1, names2);
 
-    public void mergePlaceDuplicates() {
-        System.out.println("Merging places");
-        List<EGlobalPlace> allPlaces = placeService.findAll();
-        // check all author combinations here?
-        int l = allPlaces.size();
-        for (int i = 0; i < l; i++) {
-            var keep = allPlaces.get(i);
-            for (int j = i + 1; j < l; j++) {
-                var discard = allPlaces.get(j);
-                if (!keep.equals(discard)) {
-                    placeService.mergePlaces(keep, discard);
-                }
-            }
-        }
+        return matches >= minMatches;
     }
+    
+
 
     public void insertBook(EGlobalBook book) {
         Optional<EGlobalBook> globalBook13 = bookService.findByIsbn13(book.getIsbn13());
