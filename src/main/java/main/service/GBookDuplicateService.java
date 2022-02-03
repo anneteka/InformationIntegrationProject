@@ -55,7 +55,7 @@ public class GBookDuplicateService {
         allBooks.addAll(secondSource);
         allBooks.addAll(thirdSource);
         List<EGlobalBook> uniqueBooks = mergeBookDuplicates(allBooks);
-        for (EGlobalBook book: uniqueBooks) {
+        for (EGlobalBook book : uniqueBooks) {
             //this method removes duplicates from inside lists of characters authors places and genres
             mergeDuplicatesInBook(book);
         }
@@ -144,8 +144,8 @@ public class GBookDuplicateService {
             var keep = allAuthors.get(i);
             for (int j = i + 1; j < l; j++) {
                 var discard = allAuthors.get(j);
-                if (isPersonDuplicate(keep, discard)) {
-                    book.getAuthors().remove(discard) ;
+                if (book.getAuthors().contains(keep) && isPersonDuplicate(keep, discard)) {
+                    book.getAuthors().remove(discard);
                 }
             }
         }
@@ -154,14 +154,13 @@ public class GBookDuplicateService {
     public void mergeCharacterDuplicates(EGlobalBook book) {
         System.out.println("Merging characters");
         List<String> allCharacters = new ArrayList<>(book.getCharacters());
-        // check all author combinations here?
         int l = allCharacters.size();
         for (int i = 0; i < l; i++) {
             var keep = allCharacters.get(i);
             for (int j = i + 1; j < l; j++) {
                 var discard = allCharacters.get(j);
-                if (isPersonDuplicate(keep, discard)) {
-                    book.getCharacters().remove(discard) ;
+                if (book.getCharacters().contains(keep) && isPersonDuplicate(keep, discard)) {
+                    book.getCharacters().remove(discard);
                 }
             }
         }
@@ -176,8 +175,8 @@ public class GBookDuplicateService {
             var keep = allGenres.get(i);
             for (int j = i + 1; j < l; j++) {
                 var discard = allGenres.get(j);
-                if (isExactDuplicate(keep, discard)) {
-                    book.getGenres().remove(discard) ;
+                if (book.getGenres().contains(keep) && isExactDuplicate(keep, discard)) {
+                    book.getGenres().remove(discard);
                 }
             }
         }
@@ -192,8 +191,8 @@ public class GBookDuplicateService {
             var keep = allPlaces.get(i);
             for (int j = i + 1; j < l; j++) {
                 var discard = allPlaces.get(j);
-                if (isExactDuplicate(keep, discard)) {
-                    book.getPlaces().remove(discard) ;
+                if (book.getPlaces().contains(keep) && isExactDuplicate(keep, discard)) {
+                    book.getPlaces().remove(discard);
                 }
             }
         }
@@ -214,7 +213,7 @@ public class GBookDuplicateService {
         String[] names1 = genre1.toLowerCase().split(" ");
         String[] names2 = genre2.toLowerCase().split(" ");
 
-        int minMatches = Math.min(names1.length, names2.length); 
+        int minMatches = Math.min(names1.length, names2.length);
 
         int matches = MergeHelperUtil.getExactMatchesCount(names1, names2);
 
@@ -268,11 +267,21 @@ public class GBookDuplicateService {
         if (!isNullOrEmpty(original.getSeries()) && isNullOrEmpty(original.getSeries())) {
             original.setSeries(copy.getSeries());
         }
+        HashSet<String> places = new HashSet<>(original.getPlaces());
+        places.addAll(copy.getPlaces());
+        original.setPlaces(new ArrayList<>(places));
 
-        original.getPlaces().addAll(copy.getPlaces());
-        original.getCharacters().addAll(copy.getCharacters());
-        original.getAuthors().addAll(copy.getAuthors());
-        original.getGenres().addAll(copy.getGenres());
+        HashSet<String> characters = new HashSet<>(original.getCharacters());
+        characters.addAll(copy.getCharacters());
+        original.setCharacters(new ArrayList<>(characters));
+
+        HashSet<String> authors = new HashSet<>(original.getAuthors());
+        authors.addAll(copy.getAuthors());
+        original.setAuthors(new ArrayList<>(authors));
+
+        HashSet<String> genres = new HashSet<>(original.getGenres());
+        genres.addAll(copy.getGenres());
+        original.setGenres(new ArrayList<>(genres));
     }
 
     private boolean isNullOrEmpty(String string) {

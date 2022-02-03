@@ -17,8 +17,8 @@ public class Application {
         // use one of the two methods to fill in data to the databases when the app starts running
         // you only need to run it once and only need one of them
 //        context.getBean(SetUpService.class).setUpTestSources();
-        context.getBean(SetUpService.class).setUpFromSources();
-        context.getBean(GBookDuplicateService.class).setUpGlobalSchema();
+//        context.getBean(SetUpService.class).setUpFromSources();
+//        context.getBean(GBookDuplicateService.class).setUpGlobalSchema();
     }
 
 }
