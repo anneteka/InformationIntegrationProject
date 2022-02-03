@@ -64,7 +64,7 @@ public class SetUpService {
 
     public void setUpFromSources() throws FileNotFoundException {
         String firstSource = Paths.get("src", "main", "resources", "data", "blackwell_shop_books.csv").toString();
-        String secondSource = Paths.get("src", "main", "resources", "data", "books2.csv").toString();
+        String secondSource = Paths.get("src", "main", "resources", "data", "books2_copy.csv").toString();
         String thirdSource = Paths.get("src", "main", "resources", "data", "books3_copy.csv").toString();
         setUpSources(firstSource, secondSource, thirdSource);
     }

@@ -22,4 +22,6 @@ public interface GBookRepository extends CrudRepository<EGlobalBook, Long> {
     Optional<EGlobalBook> findByIsbn13(String isbn13);
 
     void deleteAllByTitle(String title);
+
+    List<EGlobalBook> findAllByTitleContainsOrOriginalTitleContains(String title, String originalTitle);
 }
