@@ -8,12 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import main.database.entity.EBook;
 
 import java.util.ArrayList;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -23,7 +20,7 @@ import java.util.Objects;
 @Entity
 @EqualsAndHashCode
 @Table(name = "global_book")
-public class EGlobalBook extends EBook {
+public class EGlobalBook {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
