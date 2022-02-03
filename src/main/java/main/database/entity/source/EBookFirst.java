@@ -1,7 +1,6 @@
 package main.database.entity.source;
 
 import lombok.*;
-import main.database.entity.EBook;
 
 import javax.persistence.*;
 
