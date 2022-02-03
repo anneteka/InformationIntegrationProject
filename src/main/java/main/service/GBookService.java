@@ -20,8 +20,12 @@ public class GBookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<EGlobalBook> findAllByTitleOrOriginalTitle(String title){
+    public List<EGlobalBook> findAllByTitleOrOriginalTitleContains(String title){
         return bookRepository.findAllByTitleContainsOrOriginalTitleContains(title, title);
+    }
+
+    public List<EGlobalBook> findAllByTitleOrOriginalTitle(String title){
+        return bookRepository.findAllByTitleOrOriginalTitle(title, title);
     }
 
     public Optional<EGlobalBook> findByIsbn13(String isbn13) {
@@ -34,5 +38,9 @@ public class GBookService {
         if (isbn10 == null || isbn10.isEmpty()) {
             return Optional.empty();
         } else return bookRepository.findByIsbn10(isbn10);
+    }
+
+    public List<EGlobalBook> findAll() {
+        return bookRepository.findAll();
     }
 }

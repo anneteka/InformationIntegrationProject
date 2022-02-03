@@ -19,8 +19,23 @@ public class BookController {
         this.service = service;
     }
 
+    @GetMapping("/title-contains/{title}")
+    public List<EGlobalBook> findByTitleContains(@PathVariable String title){
+        return service.findAllByTitleOrOriginalTitleContains(title);
+    }
+
     @GetMapping("/title/{title}")
     public List<EGlobalBook> findByTitle(@PathVariable String title){
         return service.findAllByTitleOrOriginalTitle(title);
+    }
+
+    @GetMapping("/all")
+    public List<EGlobalBook> findAll(){
+        return service.findAll();
+    }
+
+    @GetMapping("/query")
+    public List<EGlobalBook> findBy(){
+        return null;
     }
 }
