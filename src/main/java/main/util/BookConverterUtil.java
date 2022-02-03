@@ -25,8 +25,13 @@ public class BookConverterUtil {
 
             authorSet.add(author.trim());
         }
-
-        return new EGlobalBook(firstBook.getIsbn(), null, null, firstBook.getEuro_price(), firstBook.getDiscount_euro(),
+        Double price = null;
+        try {
+            price = Double.parseDouble(firstBook.getEuro_price());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new EGlobalBook(firstBook.getIsbn(), null, null, price, firstBook.getDiscount_euro(),
                 firstBook.getType(), firstBook.getLinkBookPage(), firstBook.getName(),
                 firstBook.getSubtitle(), null, firstBook.getEdition(), firstBook.getPublisher(),
                 firstBook.getPublished_country(), firstBook.getLanguage(), null, firstBook.getHeight(),

@@ -226,7 +226,7 @@ public class GBookDuplicateService {
             original.setIsbn13(copy.getIsbn13());
         if (!isNullOrEmpty(copy.getIsbn10()) && isNullOrEmpty(original.getIsbn10()))
             original.setIsbn10(copy.getIsbn10());
-        if (!isNullOrEmpty(copy.getEuroPrice()) && isNullOrEmpty(original.getEuroPrice()))
+        if (copy.getEuroPrice()!=null && original.getEuroPrice()==null)
             original.setEuroPrice(copy.getEuroPrice());
         if (!isNullOrEmpty(copy.getEuroDiscount()) && isNullOrEmpty(original.getEuroDiscount()))
             original.setEuroDiscount(copy.getEuroDiscount());

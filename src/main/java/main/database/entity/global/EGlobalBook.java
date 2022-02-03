@@ -32,7 +32,7 @@ public class EGlobalBook {
     @Column(name = "publication_date")
     private String publication_date;
     @Column(name = "euro_price")
-    private String euroPrice;
+    private Double euroPrice;
     @Column(name = "euro_discount")
     private String euroDiscount;
     @Column(name = "type")
@@ -93,7 +93,7 @@ public class EGlobalBook {
 
 
     public EGlobalBook(
-            String isbn13, String isbn10, String publication_date, String euroPrice,
+            String isbn13, String isbn10, String publication_date, Double euroPrice,
             String euroDiscount, String type, String linkBookPage, String title,
             String subtitle, String originalTitle, String edition,
             String publisher, String publishedCountry, String language, String numPages,
@@ -137,7 +137,7 @@ public class EGlobalBook {
         this.source = source;
     }
 
-    public EGlobalBook(String isbn13, String isbn10, String publication_date, String euroPrice,
+    public EGlobalBook(String isbn13, String isbn10, String publication_date, Double euroPrice,
                        String euroDiscount, String type, String linkBookPage, String title, String subtitle,
                        String originalTitle, String edition, String publisher, String publishedCountry,
                        String language, String numPages, String height, String width, String spine,

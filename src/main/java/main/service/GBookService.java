@@ -43,4 +43,24 @@ public class GBookService {
     public List<EGlobalBook> findAll() {
         return bookRepository.findAll();
     }
+
+    public List<EGlobalBook> findByTitleAndCharacterAndPrice(String title, String character, Double price) {
+        if (title != null && character != null && price!=null)
+        return bookRepository.query1(title, character, price);
+        else if (title!=null && character!=null){
+            return bookRepository.findAllByTitleAndCharacter(title, character);
+        } else if (title!=null && price!=null){
+            return bookRepository.findAllByTitleAndPrice(title, price);
+        } else if (price!=null && character!=null){
+            return bookRepository.findAllByCharacterAndPrice(character, price);
+        } else if (title!=null){
+            return  bookRepository.findAllByTitleContainsOrOriginalTitleContains(title, title);
+        }else if (character!=null){
+            return bookRepository.findAllByCharacter(character);
+        }else if (price!=null){
+            return bookRepository.findAllByEuroPriceLessThanEqual(price);
+        } else {
+            return bookRepository.findAll();
+        }
+    }
 }
