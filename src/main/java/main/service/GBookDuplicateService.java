@@ -55,10 +55,14 @@ public class GBookDuplicateService {
         allBooks.addAll(secondSource);
         allBooks.addAll(thirdSource);
         List<EGlobalBook> uniqueBooks = mergeBookDuplicates(allBooks);
+        for (EGlobalBook book: uniqueBooks) {
+            //this method should remov duplicates from inside lists of characters authors places genres
+            mergeDuplicatesInBook(book);
+        }
         bookRepo.saveAll(uniqueBooks);
         LOG.info("finished merging duplicates");
 
-
+        cleanEmptyBooks();
         System.out.println("done");
         LOG.info("DONE");
 
@@ -67,15 +71,6 @@ public class GBookDuplicateService {
     private void cleanEmptyBooks() {
         bookRepo.deleteAllByTitle("");
         bookRepo.deleteAllByTitle(null);
-    }
-
-    private List<String> constructIsbnKeys(EGlobalBook book) {
-        ArrayList<String> keys = new ArrayList<>();
-        keys.add(book.getIsbn13());
-        keys.add(book.getIsbn10());
-        keys.remove(null);
-        keys.remove("");
-        return keys.stream().toList();
     }
 
     public List<EGlobalBook> mergeBookDuplicates(List<EGlobalBook> allBooks) {
@@ -149,7 +144,7 @@ public class GBookDuplicateService {
         }
     }
 
-    public void mergeBookAuthorDuplicates(EGlobalBook book) {
+    public void mergeDuplicatesInBook(EGlobalBook book) {
         ArrayList<String> copyAuthors = new ArrayList<>(book.getAuthors());
         for (String author1 : copyAuthors) {
             for (String author2 : copyAuthors) {
@@ -160,6 +155,7 @@ public class GBookDuplicateService {
                 }
             }
         }
+        // todo the same for characters places and genres
 
     }
 
@@ -295,6 +291,4 @@ public class GBookDuplicateService {
 
         return matches >= minMatches;
     }
-}
-
 }
