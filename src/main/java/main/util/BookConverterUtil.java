@@ -74,7 +74,7 @@ public class BookConverterUtil {
 
         // Save genre list
         HashSet<String> genreSet = new HashSet<>();
-        String genreList = thirdBook.getAuthor();
+        String genreList = thirdBook.getGenres();
         String genres[] = genreList.split(",");
 
         for (String genre : genres) {
@@ -83,7 +83,7 @@ public class BookConverterUtil {
 
         // Save character list
         HashSet<String> characterSet = new HashSet<>();
-        String characterList = thirdBook.getAuthor();
+        String characterList = thirdBook.getCharacters();
         String[] characters = characterList.split(",");
 
         for (String character : characters) {
