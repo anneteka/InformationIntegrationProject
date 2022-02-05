@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,4 +55,7 @@ public interface GBookRepository extends CrudRepository<EGlobalBook, Long> {
 
     @Query("select b from EGlobalBook b join b.authors a where a like concat('%', :author, '%') and b.year = :year")
     List<EGlobalBook> findAllByAuthorAndYear(String author, Integer year);
+
+    @Query("select count(b) from EGlobalBook b where b.year = :year")
+    Integer countByYear(Integer year);
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class BookController {
@@ -51,5 +52,13 @@ public class BookController {
     ) {
         List<EGlobalBook> res = service.findAllByYearAndAuthor(year, author);
         return new BookStats(res.size(), res);
+    }
+
+    @GetMapping("/get-statistics-by-years")
+    public List<YearStats> getStatsByYears(
+            @RequestParam(name = "firstYear") Integer firstYear,
+            @RequestParam(name = "lastYear") Integer lastYear
+    ){
+        return service.getStatsByYears(firstYear, lastYear);
     }
 }

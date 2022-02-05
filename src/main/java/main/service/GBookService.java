@@ -1,5 +1,6 @@
 package main.service;
 
+import main.controller.YearStats;
 import main.database.entity.global.*;
 import main.database.repository.global.GBookRepository;
 import org.apache.logging.log4j.LogManager;
@@ -7,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,5 +75,13 @@ public class GBookService {
         else if (author!=null)
             return bookRepository.findAllByAuthor(author);
         else return bookRepository.findAll();
+    }
+
+    public List<YearStats> getStatsByYears(Integer firstYear, Integer lastYear) {
+        List<YearStats> res = new ArrayList<>();
+        for (int i = firstYear; i <= lastYear ; i++) {
+            res.add(new YearStats(i, bookRepository.countByYear(i)));
+        }
+        return res;
     }
 }
