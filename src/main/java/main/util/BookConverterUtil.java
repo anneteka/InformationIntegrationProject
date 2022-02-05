@@ -56,8 +56,13 @@ public class BookConverterUtil {
         for (String author : authors) {
             authorSet.add(author.trim());
         }
-
-        return new EGlobalBook(isbn13, secondBook.getIsbn(), secondBook.getOriginalPublicationYear(), null,
+        Integer year = null;
+        try {
+            year = Integer.parseInt(secondBook.getOriginalPublicationYear());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new EGlobalBook(isbn13, secondBook.getIsbn(), year, null,
                 null, null, null, secondBook.getTitle(),
                 null, secondBook.getOriginalTitle(), null,
                 null, null, null, null,
@@ -104,14 +109,15 @@ public class BookConverterUtil {
 
         // last 4 characters of the string are year
         String date = thirdBook.getFirstPublishDate();
-        int year = -1;
+        Integer year = null;
         try {
             year = Integer.parseInt(date.substring(date.length() - 4));
         } catch (Exception e) {
+            e.printStackTrace();
             // TODO parser for dates like "Sep-96" "Mar-01"
         }
 
-        return new EGlobalBook(thirdBook.getIsbn13(), thirdBook.getIsbn(), "" + year, null,
+        return new EGlobalBook(thirdBook.getIsbn13(), thirdBook.getIsbn(), year, null,
                 null, null, null, thirdBook.getTitle(),
                 null, null, null,
                 null, null, thirdBook.getLanguage(), null,

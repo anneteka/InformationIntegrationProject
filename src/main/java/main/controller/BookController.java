@@ -16,31 +16,40 @@ public class BookController {
     private final GBookService service;
 
     @Autowired
-    public BookController(GBookService service){
+    public BookController(GBookService service) {
         this.service = service;
     }
 
     @GetMapping("/title-contains/{title}")
-    public List<EGlobalBook> findByTitleContains(@PathVariable String title){
+    public List<EGlobalBook> findByTitleContains(@PathVariable String title) {
         return service.findAllByTitleOrOriginalTitleContains(title);
     }
 
     @GetMapping("/title/{title}")
-    public List<EGlobalBook> findByTitle(@PathVariable String title){
+    public List<EGlobalBook> findByTitle(@PathVariable String title) {
         return service.findAllByTitleOrOriginalTitle(title);
     }
 
     @GetMapping("/all")
-    public List<EGlobalBook> findAll(){
+    public List<EGlobalBook> findAll() {
         return service.findAll();
     }
 
     @GetMapping("/query")
     public List<EGlobalBook> findBy(
-            @RequestParam(name = "title", required = false) String title,
+            @RequestParam(name = "title-contains", required = false) String title,
             @RequestParam(name = "character", required = false) String character,
             @RequestParam(name = "max-price", required = false) Double price
-    ){
+    ) {
         return service.findByTitleAndCharacterAndPrice(title, character, price);
+    }
+
+    @GetMapping("/get-statistics-by")
+    public BookStats getStatsBy(
+            @RequestParam(name = "year", required = false) Integer year,
+            @RequestParam(name = "author", required = false) String author
+    ) {
+        List<EGlobalBook> res = service.findAllByYearAndAuthor(year, author);
+        return new BookStats(res.size(), res);
     }
 }

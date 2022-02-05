@@ -226,7 +226,7 @@ public class GBookDuplicateService {
             original.setIsbn13(copy.getIsbn13());
         if (!isNullOrEmpty(copy.getIsbn10()) && isNullOrEmpty(original.getIsbn10()))
             original.setIsbn10(copy.getIsbn10());
-        if (copy.getEuroPrice()!=null && original.getEuroPrice()==null)
+        if (copy.getEuroPrice() != null && original.getEuroPrice() == null)
             original.setEuroPrice(copy.getEuroPrice());
         if (!isNullOrEmpty(copy.getEuroDiscount()) && isNullOrEmpty(original.getEuroDiscount()))
             original.setEuroDiscount(copy.getEuroDiscount());
@@ -254,8 +254,8 @@ public class GBookDuplicateService {
             original.setLongDescription(copy.getLongDescription());
         if (!isNullOrEmpty(copy.getReview()) && isNullOrEmpty(original.getReview()))
             original.setReview(copy.getReview());
-        if (!isNullOrEmpty(copy.getPublication_date()) && isNullOrEmpty(original.getPublication_date()))
-            original.setPublication_date(copy.getPublication_date());
+        if (copy.getYear() != null && original.getYear() == null)
+            original.setYear(copy.getYear());
         if (!isNullOrEmpty(copy.getOriginalTitle()) && isNullOrEmpty(original.getOriginalTitle()))
             original.setOriginalTitle(copy.getOriginalTitle());
         if (!isNullOrEmpty(copy.getAverageRating()) && isNullOrEmpty(original.getAverageRating()))

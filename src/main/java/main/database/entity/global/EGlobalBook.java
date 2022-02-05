@@ -30,7 +30,7 @@ public class EGlobalBook {
     @Column(name = "isbn10")
     private String isbn10;
     @Column(name = "publication_date")
-    private String publication_date;
+    private Integer year;
     @Column(name = "euro_price")
     private Double euroPrice;
     @Column(name = "euro_discount")
@@ -93,7 +93,7 @@ public class EGlobalBook {
 
 
     public EGlobalBook(
-            String isbn13, String isbn10, String publication_date, Double euroPrice,
+            String isbn13, String isbn10, Integer publicationYear, Double euroPrice,
             String euroDiscount, String type, String linkBookPage, String title,
             String subtitle, String originalTitle, String edition,
             String publisher, String publishedCountry, String language, String numPages,
@@ -105,7 +105,7 @@ public class EGlobalBook {
     ) {
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;
-        this.publication_date = publication_date;
+        this.year = publicationYear;
         this.euroPrice = euroPrice;
         this.euroDiscount = euroDiscount;
         this.type = type;
@@ -137,7 +137,7 @@ public class EGlobalBook {
         this.source = source;
     }
 
-    public EGlobalBook(String isbn13, String isbn10, String publication_date, Double euroPrice,
+    public EGlobalBook(String isbn13, String isbn10, Integer publication_date, Double euroPrice,
                        String euroDiscount, String type, String linkBookPage, String title, String subtitle,
                        String originalTitle, String edition, String publisher, String publishedCountry,
                        String language, String numPages, String height, String width, String spine,
@@ -146,7 +146,7 @@ public class EGlobalBook {
                        String series, String awards, String source) {
         this.isbn13 = isbn13;
         this.isbn10 = isbn10;
-        this.publication_date = publication_date;
+        this.year = publication_date;
         this.euroPrice = euroPrice;
         this.euroDiscount = euroDiscount;
         this.type = type;

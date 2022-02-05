@@ -46,4 +46,12 @@ public interface GBookRepository extends CrudRepository<EGlobalBook, Long> {
 
     @Query("select b from EGlobalBook b where (b.title like concat('%', :title, '%') or b.originalTitle like concat('%', :title, '%')) and b.euroPrice<=:price")
     List<EGlobalBook> findAllByTitleAndPrice(String title, Double price);
+
+    List<EGlobalBook> findAllByYear(Integer year);
+
+    @Query("select b from EGlobalBook b join b.authors a where a like concat('%', :author, '%')")
+    List<EGlobalBook> findAllByAuthor(String author);
+
+    @Query("select b from EGlobalBook b join b.authors a where a like concat('%', :author, '%') and b.year = :year")
+    List<EGlobalBook> findAllByAuthorAndYear(String author, Integer year);
 }

@@ -63,4 +63,15 @@ public class GBookService {
             return bookRepository.findAll();
         }
     }
+
+    public List<EGlobalBook> findAllByYearAndAuthor(Integer year, String author) {
+        if (year!=null && author!=null)
+//            return bookRepository.findAllByAuthorAndYear(author, year);
+            return null;
+        else if (year!=null)
+            return bookRepository.findAllByYear(year);
+        else if (author!=null)
+            return bookRepository.findAllByAuthor(author);
+        else return bookRepository.findAll();
+    }
 }
