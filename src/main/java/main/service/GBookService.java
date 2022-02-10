@@ -68,8 +68,7 @@ public class GBookService {
 
     public List<EGlobalBook> findAllByYearAndAuthor(Integer year, String author) {
         if (year!=null && author!=null)
-//            return bookRepository.findAllByAuthorAndYear(author, year);
-            return null;
+            return bookRepository.findAll();
         else if (year!=null)
             return bookRepository.findAllByYear(year);
         else if (author!=null)
