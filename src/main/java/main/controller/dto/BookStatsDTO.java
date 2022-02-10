@@ -1,4 +1,4 @@
-package main.controller;
+package main.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookStats {
+public class BookStatsDTO {
     private int amount;
     private List<EGlobalBook> result;
 }

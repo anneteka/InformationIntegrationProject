@@ -1,4 +1,4 @@
-package main.controller;
+package main.controller.dto;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @Getter
 @EqualsAndHashCode
-public class YearStats {
+public class YearStatsDTO {
     Integer year;
     Integer amount;
 }

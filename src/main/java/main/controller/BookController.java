@@ -1,5 +1,7 @@
 package main.controller;
 
+import main.controller.dto.BookStatsDTO;
+import main.controller.dto.YearStatsDTO;
 import main.database.entity.global.EGlobalBook;
 import main.service.GBookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class BookController {
@@ -46,16 +47,16 @@ public class BookController {
     }
 
     @GetMapping("/get-statistics-by")
-    public BookStats getStatsBy(
+    public BookStatsDTO getStatsBy(
             @RequestParam(name = "year", required = false) Integer year,
             @RequestParam(name = "author", required = false) String author
     ) {
         List<EGlobalBook> res = service.findAllByYearAndAuthor(year, author);
-        return new BookStats(res.size(), res);
+        return new BookStatsDTO(res.size(), res);
     }
 
     @GetMapping("/get-statistics-by-years")
-    public List<YearStats> getStatsByYears(
+    public List<YearStatsDTO> getStatsByYears(
             @RequestParam(name = "firstYear") Integer firstYear,
             @RequestParam(name = "lastYear") Integer lastYear
     ){

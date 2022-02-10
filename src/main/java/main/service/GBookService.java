@@ -1,6 +1,6 @@
 package main.service;
 
-import main.controller.YearStats;
+import main.controller.dto.YearStatsDTO;
 import main.database.entity.global.*;
 import main.database.repository.global.GBookRepository;
 import org.apache.logging.log4j.LogManager;
@@ -77,10 +77,10 @@ public class GBookService {
         else return bookRepository.findAll();
     }
 
-    public List<YearStats> getStatsByYears(Integer firstYear, Integer lastYear) {
-        List<YearStats> res = new ArrayList<>();
+    public List<YearStatsDTO> getStatsByYears(Integer firstYear, Integer lastYear) {
+        List<YearStatsDTO> res = new ArrayList<>();
         for (int i = firstYear; i <= lastYear ; i++) {
-            res.add(new YearStats(i, bookRepository.countByYear(i)));
+            res.add(new YearStatsDTO(i, bookRepository.countByYear(i)));
         }
         return res;
     }
